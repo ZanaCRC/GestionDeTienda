@@ -43,9 +43,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GestionDeTiendaParte1.BL\GestionDeTiendaParte1.BL.csproj" />
-    <ProjectReference Include="..\GestionDeTiendaParte1.DA\GestionDeTiendaParte1.DA.csproj" />
-    <ProjectReference Include="..\GestionDeTiendaParte1.Model\GestionDeTiendaParte1.Model.csproj" />
+    <ProjectReference Include="..\GestionDeTiendaParte2.BL\GestionDeTiendaParte2.BL.csproj" />
+    <ProjectReference Include="..\GestionDeTiendaParte2.Model\GestionDeTiendaParte2.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

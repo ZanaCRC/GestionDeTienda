@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GestionDeTiendaParte1.DA\GestionDeTiendaParte1.DA.csproj" />
-    <ProjectReference Include="..\GestionDeTiendaParte1.Model\GestionDeTiendaParte1.Model.csproj" />
+    <ProjectReference Include="..\GestionDeTiendaParte2.DA\GestionDeTiendaParte2.DA.csproj" />
+    <ProjectReference Include="..\GestionDeTiendaParte2.Model\GestionDeTiendaParte2.Model.csproj" />
   </ItemGroup>
 
 </Project>
