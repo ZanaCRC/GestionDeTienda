@@ -1,0 +1,194 @@
+﻿@model IEnumerable<GestionDeTiendaParte1.Model.Venta>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="display-4 text-center mb-4">Lista de Ventas</h1>
+
+<div class="d-flex justify-content-between mb-3">
+    <form method="get" action="@Url.Action("Create", "Ventas")">
+        <button type="submit" class="btn btn-add icon-slide-lef"><i class="fas fa-plus"></i> Agregar Venta</button>
+    </form>
+    <div>
+        <!-- Aquí podrías agregar otros botones o acciones generales -->
+    </div>
+</div>
+
+<table class="table table-hover table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.NombreCliente)</th>
+            <th>@Html.DisplayNameFor(model => model.Total)</th>
+            <th>@Html.DisplayNameFor(model => model.Subtotal)</th>
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th class="text-center">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.NombreCliente)</td>
+                <td>@Html.DisplayFor(modelItem => item.Total)</td>
+                <td>@Html.DisplayFor(modelItem => item.Subtotal)</td>
+                <td>@Html.DisplayFor(modelItem => item.Estado)</td>
+                <td class="text-center">
+                    @if (item.Estado == GestionDeTiendaParte1.Model.EstadoVenta.Proceso)
+                    {
+                        <div class="btn-group" role="group">
+                            <form method="get" action="@Url.Action("AgregarProductosALaVenta", "Ventas")" class="d-inline">
+                                <input type="hidden" name="idVenta" value="@item.Id" />
+                                <button type="submit" class="btn btn-pop"><i class="fas fa-plus"></i> Agregar</button>
+                            </form>
+
+                            <form method="get" action="@Url.Action("ListaProductosDeVenta", "Ventas")" class="d-inline">
+                                <input type="hidden" name="idVenta" value="@item.Id" />
+                                <button type="submit" class="btn btn-pop"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
+                            </form>
+
+                            <form method="get" action="@Url.Action("EditarProductosDeVenta", "Ventas")" class="d-inline">
+                                <input type="hidden" name="idVenta" value="@item.Id" />
+                                <button type="submit" class="btn btn-pop"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                            </form>
+
+                            <form method="get" action="@Url.Action("AgregarDescuentoAVenta", "Ventas")" class="d-inline">
+                                <input type="hidden" name="idVenta" value="@item.Id" />
+                                <button type="submit" class="btn btn-pop"><i class="fas fa-percentage"></i> Descuento</button>
+                            </form>
+
+                            <form method="get" action="@Url.Action("TerminarVenta", "Ventas")" class="d-inline">
+                                <input type="hidden" name="idVenta" value="@item.Id" />
+                                <button type="submit" class="btn btn-pop"><i class="fas fa-check"></i> Finalizar</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <form method="get" action="@Url.Action("ListaProductosDeVenta", "Ventas")" class="d-inline">
+                            <input type="hidden" name="idVenta" value="@item.Id" />
+                            <button type="submit" class="btn btn-pop"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-5A6GR+KKplYfXIKghftmWwpTxvDQvcfGdswPHTMJr85Tb6H1POWf3NxBxX+UyzAv" crossorigin="anonymous">
+    <style>
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+
+            .btn-group .btn:last-child {
+                margin-right: 0;
+            }
+
+        .table thead th {
+            vertical-align: middle;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+        .btn-pop {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 8px;
+            color: #000000;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            font-size: 10px;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            z-index: 1;
+        }
+
+            .btn-pop::before,
+            .btn-pop::after {
+                content: '';
+                position: absolute;
+                transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                border-radius: 40%;
+                z-index: -1;
+            }
+
+            .btn-pop::before {
+                background-color: #0056b3;
+                top: -0.75rem;
+                left: 0.5rem;
+                animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.25s infinite alternate;
+            }
+
+            .btn-pop::after {
+                background-color: #428bca;
+                color: #fff;
+                top: 3rem;
+                left: 0rem;
+                animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s infinite alternate;
+            }
+
+            .btn-pop:hover::before,
+            .btn-pop:hover::after {
+                top: 0;
+                height: 100%;
+                width: 90%;
+                border-radius: 0;
+                animation: none;
+            }
+
+            .btn-pop:hover::after {
+                left: 0.4rem;
+                width: 88%;
+            }
+
+        .btn-add {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+        }
+
+            .btn-add:hover {
+                background-color: #00A8FF;
+            }
+
+        .icon-slide-left::after {
+            content: "➕";
+            position: absolute;
+            color: #fff;
+            left: -20%;
+            transition: 0.25s ease;
+            opacity: 0;
+        }
+
+        .icon-slide-left:hover::after {
+            left: 20px;
+            opacity: 1;
+        }
+
+        .icon-slide-left:hover span {
+            margin-left: 20px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

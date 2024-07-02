@@ -1,0 +1,83 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Página Principal";
+}
+
+<div class="container mt-5">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h1 class="display-4 text-center">Hola, @User.Identity.Name!</h1>
+    }
+    else
+    {
+        <h1 class="display-4 text-center">Bienvenido</h1>
+    }
+
+    <!-- Carrusel -->
+    <div id="carouselExampleIndicators" class="carousel slide mt-4" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="d-block mx-auto" src="~/imagenes/ajuste.webp" alt="Primera imagen" style="max-width: 25%; height: 50;">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block mx-auto" src="~/imagenes/inventario.png" alt="Segunda imagen" style="max-width: 25%; height: 50;">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block mx-auto" src="~/imagenes/cajas.jpg" alt="Tercera imagen" style="max-width: 25%; height: 50;">
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Anterior</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Siguiente</span>
+        </a>
+    </div>
+
+    <!-- Tarjetas informativas -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <img class="card-img-top" src="~/imagenes/inventario.png" alt="Imagen 1">
+                <div class="card-body">
+                    <h5 class="card-title">Intentarios</h5>
+                    <p class="card-text">Añade o Modifica Inventarios</p>
+                    <a href="@Url.Action("Index", "Inventario")" class="btn btn-primary">Entrar a Inventarios</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <img class="card-img-top" src="~/imagenes/ajuste.webp" alt="Imagen 2">
+                <div class="card-body">
+                    <h5 class="card-title">Ajuste de Inventarios</h5>
+                    <p class="card-text">Modifica el Stock de Los Inventarios</p>
+                    <a href="@Url.Action("Index", "AjusteDeInventario")" class="btn btn-primary" class="btn btn-primary">Entrar a Ajuste de Inventarios</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <img class="card-img-top" src="~/imagenes/cajas.jpg" alt="Imagen 3">
+                <div class="card-body">
+                    <h5 class="card-title">Cajas</h5>
+                    <p class="card-text">Comenzar a Realizar Ventas.</p>
+                    <a href="@Url.Action("Index", "Cajas")" class="btn btn-primary">Entrar a Cajas</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="mt-4 text-center">Aprende sobre <a href="https://learn.microsoft.com/aspnet/core">crear aplicaciones web con ASP.NET Core</a>.</p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

@@ -1,0 +1,60 @@
+﻿@{
+    @model GestionDeTiendaParte1.UI.Models.CambioDeClaveViewModel
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambio de Contraseña</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/test.css" />
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 50px auto;
+        }
+
+        .form-title {
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="form-title text-center">Cambio de Contraseña</h2>
+        @if (ViewData["Error"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewData["Error"]
+            </div>
+        }
+        <form asp-action="CambioDeClave" method="post">
+            <div class="form-group">
+                <label for="ElNombre">Nombre de Usuario</label>
+                <input type="text" class="form-control" id="ElNombre" name="ElNombre" required>
+            </div>
+            <div class="form-group">
+                <label for="NuevaClave">Nueva Contraseña</label>
+                <input type="password" class="form-control" id="NuevaClave" name="NuevaClave" required>
+            </div>
+            <div>
+            <button type="submit" class="btn btn-primary btn-block">Cambiar Contraseña</button>
+            <a asp-action="Loguearse" class="btn btn-primary btn-block">Volver</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

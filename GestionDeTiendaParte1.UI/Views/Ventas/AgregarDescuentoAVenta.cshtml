@@ -1,0 +1,60 @@
+﻿@model GestionDeTiendaParte1.Model.Venta
+
+@{
+    ViewData["Title"] = "AgregarDescuentoAVenta";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Agregar descuento</h1>
+        <hr />
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form asp-action="AgregarDescuentoAVenta">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="PorcentajeDesCuento" class="control-label">Porcentaje de descuento:</label>
+                        <input asp-for="PorcentajeDesCuento" class="form-control" />
+                        <span asp-validation-for="PorcentajeDesCuento" class="text-danger"></span>
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="submit" value="Agregar" class="btn btn-primary" />
+                        <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary">Ir a Ventas</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRqIOgfcjtGdo7blRc2fwbJwwDIde6dJMEgobii+/" crossorigin="anonymous"></script>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

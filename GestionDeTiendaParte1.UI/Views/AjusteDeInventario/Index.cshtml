@@ -1,0 +1,114 @@
+﻿@model IEnumerable<GestionDeTiendaParte1.Model.Inventario>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 style="color: #000; text-align: center; font-family: Georgia, serif; font-size: 30px; font-weight: lighter; margin-bottom: 20px;">Lista de Inventario</h1>
+
+
+<form asp-controller="AjusteDeInventario" asp-action="Index" method="get">
+    <p>
+        Nombre: <input type="text" name="nombre" />
+        <input type="submit" value="Filtrar" class="btn btn-outline-secondary" />
+    </p>
+</form>
+
+<div class="card-container">
+    @foreach (var item in Model)
+    {
+        <div class="card">
+            <span class="card-icon">📦</span>
+            <p>Nombre: @Html.DisplayFor(modelItem => item.Nombre)</p>
+            <p>Cantidad: @Html.DisplayFor(modelItem => item.Cantidad)</p>
+            <p>Precio: @Html.DisplayFor(modelItem => item.Precio)</p>
+            <a asp-action="AgregarAjuste" asp-route-idInventario="@item.id" class="btn icon-slide-left">Agregar Ajuste</a>
+            <a asp-action="ListaDeAjustes" asp-route-ajuste="@item.id" class="btn">Ver Ajustes</a>
+        </div>
+    }
+</div>
+
+<style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .card {
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex: 1 0 calc(25% - 20px);
+        max-width: calc(25% - 20px);
+    }
+
+    .card-icon {
+        position: absolute;
+        top: 45%;
+        left: 85%;
+        transform: translate(-50%, -50%);
+        font-size: 45px; 
+    }
+
+    .btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 16px;
+        color: #000000;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        font-size: 16px;
+        transition: all 0.3s ease-in-out;
+        position: relative;
+        z-index: 1; 
+    }
+
+        .btn::before,
+        .btn::after {
+            content: '';
+            position: absolute;
+            height: 40%;
+            width: 10%;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-radius: 50%;
+            z-index: -1; 
+        }
+
+        .btn::before {
+            background-color: #c92918;
+            top: -0.75rem;
+            left: 0.5rem;
+            animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.25s infinite alternate;
+        }
+
+        .btn::after {
+            background-color: #e74c3c;
+            color: #fff;
+            top: 3rem;
+            left: 13rem;
+            animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s infinite alternate;
+        }
+
+        .btn:hover::before,
+        .btn:hover::after {
+            top: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: 0;
+            animation: none;
+        }
+
+        .btn:hover::after {
+            left: 0rem;
+        }
+
+       
+</style>
+

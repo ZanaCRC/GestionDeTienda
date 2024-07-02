@@ -1,0 +1,160 @@
+﻿@model GestionDeTiendaParte1.Model.InformacionCaja
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interfaz de Usuario de Caja</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .boton {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px 20px;
+            margin: 0 10px;
+        }
+
+            .boton:hover {
+                background-color: #0056b3;
+            }
+
+        .contenido {
+            padding: 20px;
+            text-align: center; /* Centrar contenido */
+        }
+
+        .info-caja {
+            max-width: 600px; /* Ancho máximo del contenedor */
+            margin: 0 auto; /* Centrar horizontalmente */
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .info-caja dl {
+                margin-bottom: 10px;
+            }
+
+            .info-caja hr {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            .info-caja button {
+                margin-top: 20px;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Interfaz de Usuario de Caja</h1>
+        @if (Model?.Caja?.Estado == GestionDeTiendaParte1.Model.EstadoAperturaCaja.Nueva || Model == null || Model.Caja == null)
+        {
+            <div class="mensaje-advertencia">
+                <p>Advertencia: No hay una caja abierta.</p>
+            </div>
+            <form method="post" action="@Url.Action("Index", "Cajas")">
+                <input type="hidden" name="accion" value="abrir">
+                <button type="submit" class="boton">Iniciar Caja</button>
+            </form>
+        }
+        else
+        {
+            @if (Model.Caja.Estado == GestionDeTiendaParte1.Model.EstadoAperturaCaja.Cerrada)
+            {
+                <form method="post" action="@Url.Action("Index", "Cajas")">
+                    <input type="hidden" name="accion" value="abrir">
+                    <button type="submit" class="boton">Iniciar Caja</button>
+                </form>
+
+                <form method="post" action="@Url.Action("Index", "Cajas")">
+                    <input type="hidden" name="accion" value="cerrar">
+                    <button type="submit" class="boton" disabled>Cerrar Caja</button>
+                </form>
+            }
+            else
+            {
+                <form method="post" action="@Url.Action("Index", "Cajas")">
+                    <input type="hidden" name="accion" value="cerrar">
+                    <button type="submit" class="boton">Cerrar Caja</button>
+                </form>
+
+                <form method="post" action="@Url.Action("Index", "Cajas")">
+                    <input type="hidden" name="accion" value="abrir">
+                    <button type="submit" class="boton" disabled>Iniciar Caja</button>
+                </form>
+            }
+        }
+    </div>
+
+    @if (Model?.Caja?.Estado == GestionDeTiendaParte1.Model.EstadoAperturaCaja.Abierta)
+    {
+        <div class="contenido">
+            <div class="info-caja">
+                <h4>Información de la caja</h4>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-6">
+                        Fecha de inicio:
+                    </dt>
+                    <dd class="col-sm-6">
+                        @Html.DisplayFor(model => model.Caja.FechaDeInicio)
+                    </dd>
+                </dl>
+
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-6">
+                        Monto recibido en efectivo:
+                    </dt>
+                    <dd class="col-sm-6">
+                        @Html.DisplayFor(model => model.AcumuladoEfectivo)
+                    </dd>
+                </dl>
+
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-6">
+                        Monto recibido por tarjeta:
+                    </dt>
+                    <dd class="col-sm-6">
+                        @Html.DisplayFor(model => model.AcumuladoTarjeta)
+                    </dd>
+                </dl>
+
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-6">
+                        Monto recibido por SINPE Móvil:
+                    </dt>
+                    <dd class="col-sm-6">
+                        @Html.DisplayFor(model => model.AcumuladoSinpeMovil)
+                    </dd>
+                </dl>
+
+                <!-- Botón para redireccionar al controlador Ventas -->
+                <form method="get" action="@Url.Action("Index", "Ventas")">
+                    <button type="submit" class="boton">Ver Ventas</button>
+                </form>
+            </div>
+        </div>
+    }
+</body>
+</html>

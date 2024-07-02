@@ -1,0 +1,73 @@
+﻿@model  IEnumerable<GestionDeTiendaParte1.Model.Inventario>
+
+@{
+    ViewData["Title"] = "ListarProductosDeVenta";
+}
+
+<h1>Carrito de compras:</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Categoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th>
+                Monto descuento
+            </th>
+            <th>
+                Subtotal
+            </th>
+            <th>
+                Monto
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Categoria)
+            </td>
+            <td>
+                    @item.VentaDetalles.FirstOrDefault().Cantidad
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Precio)
+            </td>
+                <td>
+                    @item.VentaDetalles.FirstOrDefault().MontoDescuento
+                </td>
+                <td>
+                    @item.VentaDetalles.FirstOrDefault().Monto
+                </td>
+                <td>
+                <td>
+                        @(item.VentaDetalles.FirstOrDefault().Monto - item.VentaDetalles.FirstOrDefault().MontoDescuento)
+                </td>
+
+                </td>
+            <td>
+              
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<a asp-action="Index" asp-controller="Ventas" class="btn btn-secondary">Volver</a>

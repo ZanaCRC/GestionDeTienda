@@ -1,0 +1,47 @@
+﻿@model IEnumerable<GestionDeTiendaParte1.Model.Historico>
+
+@{
+    ViewData["Title"] = "Histórico";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center mb-4">Histórico de Cambios</h1>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Id)</th>
+                            <th>@Html.DisplayNameFor(model => model.ElTipoDeModificacion)</th>
+                            <th>@Html.DisplayNameFor(model => model.FechaYHora)</th>
+                            <th>@Html.DisplayNameFor(model => model.NombreUsuario)</th>
+                            <th>@Html.DisplayNameFor(model => model.ElNombre)</th>
+                            <th>@Html.DisplayNameFor(model => model.LaCategoria)</th>
+                            <th>@Html.DisplayNameFor(model => model.ElPrecio)</th>
+                            <th>@Html.DisplayNameFor(model => model.IdInventario)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ElTipoDeModificacion)</td>
+                                <td>@Html.DisplayFor(modelItem => item.FechaYHora)</td>
+                                <td>@Html.DisplayFor(modelItem => item.NombreUsuario)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ElNombre)</td>
+                                <td>@Html.DisplayFor(modelItem => item.LaCategoria)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ElPrecio)</td>
+                                <td>@Html.DisplayFor(modelItem => item.IdInventario)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-4">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Regresar</a>
+            </div>
+        </div>
+    </div>
+</div>

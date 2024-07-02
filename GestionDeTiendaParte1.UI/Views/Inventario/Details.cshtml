@@ -1,0 +1,42 @@
+﻿@model GestionDeTiendaParte1.Model.Inventario
+
+@{
+    ViewData["Title"] = "Detalles del Inventario";
+}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>Detalles del Inventario</h2>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">ID:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.id)</dd>
+
+                <dt class="col-sm-4">Nombre:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Nombre)</dd>
+
+                <dt class="col-sm-4">Categoría:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Categoria)</dd>
+
+                <dt class="col-sm-4">Cantidad:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Cantidad)</dd>
+
+                <dt class="col-sm-4">Precio:</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Precio)</dd>
+            </dl>
+        </div>
+        <div class="card-footer text-muted">
+            <a href="@Url.Action("Historico", new { id = Model.id })" class="btn btn-info">Histórico</a>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Regresar</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        // Aquí puedes agregar JavaScript adicional si es necesario
+    </script>
+}

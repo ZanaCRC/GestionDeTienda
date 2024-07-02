@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>17455a8a-126a-4599-8d74-8f7f02b590dc</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestionDeTiendaParte1.DA\GestionDeTiendaParte1.DA.csproj" />
+    <ProjectReference Include="..\GestionDeTiendaParte1.Model\GestionDeTiendaParte1.Model.csproj" />
+  </ItemGroup>
+
+</Project>

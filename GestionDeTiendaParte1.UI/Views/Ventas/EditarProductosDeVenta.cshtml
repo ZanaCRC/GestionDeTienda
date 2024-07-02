@@ -1,0 +1,55 @@
+﻿@model IEnumerable<GestionDeTiendaParte1.Model.Inventario>
+
+@{
+    ViewData["Title"] = "EditarProductosDeVenta";
+}
+
+
+<h1>Lista de productos de la venta</h1>
+
+<form asp-action="EditarProductosDeVenta" method="post">
+    <div class="card-container">
+        @foreach (var item in Model)
+        {
+            <div class="card">
+                <input type="checkbox" name="productosSeleccionados" value="@item.id" />
+                <p>Nombre: @Html.DisplayFor(modelItem => item.Nombre)</p>
+                <p>Categoria: @Html.DisplayFor(modelItem => item.Categoria)</p>
+                <p>Precio: @Html.DisplayFor(modelItem => item.Precio)</p>
+
+               
+               
+            </div>
+        }
+    </div>
+
+    <button type="submit">Eliminar Productos</button>
+    <a asp-action="Index" asp-controller="Ventas" class="btn btn-secondary">Volver</a>
+</form>
+
+<style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .card {
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex: 1 0 calc(33.33% - 20px);
+        max-width: calc(33.33% - 20px);
+    }
+
+    button[type="submit"] {
+        margin-top: 20px;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

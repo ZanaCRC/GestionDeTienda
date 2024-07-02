@@ -1,0 +1,96 @@
+﻿@model IEnumerable<GestionDeTiendaParte1.Model.Inventario>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Lista de productos de la venta</h1>
+@{
+    var mensaje = ViewData["Error"] as string;
+}
+
+<div>
+    @if (mensaje != null)
+    {
+        <p>@mensaje</p>
+    }
+</div>
+<form id="ventaForm" asp-action="AgregarProductosALaVenta" method="post">
+    <div class="card-container">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <div class="card">
+                <input type="checkbox" id="select_@i" name="[@i].IsSelected" value="true" onchange="toggleRequired(@i)" />
+                <input type="hidden" name="[@i].Id" value="@Model.ElementAt(i).id" />
+                <p>Nombre: @Html.DisplayFor(modelItem => Model.ElementAt(i).Nombre)</p>
+                <p>Cantidad disponible: @Html.DisplayFor(modelItem => Model.ElementAt(i).Cantidad)</p>
+                <label for="cantidad_@Model.ElementAt(i).id">Cantidad:</label>
+                <input type="number" id="cantidad_@i" name="[@i].Cantidad" min="1" max="@Model.ElementAt(i).Cantidad" disabled />
+            </div>
+        }
+    </div>
+    <button type="submit">Agregar Productos</button>
+</form>
+
+@section Scripts {
+    <script>
+        function toggleRequired(index) {
+            var checkbox = document.getElementById('select_' + index);
+            var cantidadInput = document.getElementById('cantidad_' + index);
+            if (checkbox.checked) {
+                cantidadInput.disabled = false;
+                cantidadInput.required = true;
+            } else {
+                cantidadInput.disabled = true;
+                cantidadInput.required = false;
+                cantidadInput.value = '';
+            }
+        }
+
+        document.getElementById('ventaForm').addEventListener('submit', function (event) {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var formValid = true;
+            checkboxes.forEach(function (checkbox, index) {
+                if (checkbox.checked) {
+                    var cantidadInput = document.getElementById('cantidad_' + index);
+                    if (!cantidadInput.value) {
+                        formValid = false;
+                        alert('Por favor, ingrese una cantidad para el producto seleccionado.');
+                        cantidadInput.focus();
+                        event.preventDefault();
+                    }
+                }
+            });
+            if (!formValid) {
+                event.preventDefault();
+            }
+        });
+    </script>
+}
+
+<style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .card {
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex: 1 0 calc(33.33% - 20px);
+        max-width: calc(33.33% - 20px);
+    }
+
+    button[type="submit"] {
+        margin-top: 20px;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
