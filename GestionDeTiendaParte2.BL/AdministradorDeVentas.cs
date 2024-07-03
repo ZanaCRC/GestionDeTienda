@@ -10,9 +10,9 @@ namespace GestionDeTiendaParte1.BL
 {
     public class AdministradorDeVentas : IAdministradorDeVentas
     {
-        private readonly DA.DBContext _dbContext;
+        private readonly DA.DBContexto _dbContext;
 
-        public AdministradorDeVentas(DA.DBContext dbContext)
+        public AdministradorDeVentas(DA.DBContexto dbContext)
         {
             _dbContext = dbContext;
         }

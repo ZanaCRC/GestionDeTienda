@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GestionDeTiendaParte1.DA
 {
-    public class DBContext : DbContext
+    public class DBContexto : DbContext
     {
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Inventario> Inventarios { get; set; }
@@ -14,7 +14,7 @@ namespace GestionDeTiendaParte1.DA
         public DbSet<VentaDetalle> VentaDetalles { get; set; }
         public DbSet<Historico> Historico { get; set; }
 
-        public DBContext(DbContextOptions options) : base(options)
+        public DBContexto(DbContextOptions options) : base(options)
         {
         }
     }

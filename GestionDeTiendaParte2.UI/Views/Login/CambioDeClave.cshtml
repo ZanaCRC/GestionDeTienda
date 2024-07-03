@@ -40,15 +40,15 @@
         }
         <form asp-action="CambioDeClave" method="post">
             <div class="form-group">
-                <label for="ElNombre">Nombre de Usuario</label>
+                <label for="ElNombre">Nombre</label>
                 <input type="text" class="form-control" id="ElNombre" name="ElNombre" required>
             </div>
             <div class="form-group">
-                <label for="NuevaClave">Nueva Contraseña</label>
+                <label for="NuevaClave">Nueva Clave</label>
                 <input type="password" class="form-control" id="NuevaClave" name="NuevaClave" required>
             </div>
             <div>
-            <button type="submit" class="btn btn-primary btn-block">Cambiar Contraseña</button>
+            <button type="submit" class="btn btn-primary btn-block">Cambiar Clave</button>
             <a asp-action="Loguearse" class="btn btn-primary btn-block">Volver</a>
             </div>
         </form>

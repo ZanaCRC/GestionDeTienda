@@ -9,18 +9,20 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using GestionDeTiendaParte1.UI.Models;
-
+using GestionDeTiendaParte1.DA;
 namespace GestionDeTiendaParte1.UI.Controllers
 {
     public class LoginController : Controller
     {
         private BL.IAdministradorDeUsuarios ElAdministrador;
         private readonly IAdministradorDeCorreos ElMensajero;
+        private readonly DA.DBContexto ElContexto;
 
-        public LoginController(BL.IAdministradorDeUsuarios elAdministrador, BL.IAdministradorDeCorreos elMensajero)
+        public LoginController(BL.IAdministradorDeUsuarios elAdministrador, BL.IAdministradorDeCorreos elMensajero, DBContexto elcontexto)
         {
             ElAdministrador = elAdministrador;
             ElMensajero = elMensajero;  
+            ElContexto = elcontexto;
         }
 
         [HttpGet]
@@ -45,7 +47,7 @@ namespace GestionDeTiendaParte1.UI.Controllers
                 }
                 else if (resultado == "Exito")
                 {
-                    ElMensajero.SendEmailAsync(usuario.CorreoElectronico, "Registro exitoso", "Bienvenido a la tienda");
+                    ElMensajero.SendEmailAsync(usuario.CorreoElectronico, "Solicitud de creación de usuario", "Cuenta de usuario creada satisfactoriamente para el usuario " + usuario.Nombre);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -149,10 +151,17 @@ namespace GestionDeTiendaParte1.UI.Controllers
             
                 var resultado = ElAdministrador.CambiarClave(model.ElNombre, model.NuevaClave);
 
-                if (resultado)
-                {
-                    // Cambio de contraseña exitoso
-                    return RedirectToAction("Index", "Home");
+             
+            Usuario usuario = ElContexto.Usuarios.FirstOrDefault(u => u.Nombre == model.ElNombre);
+
+            if (resultado)
+            {
+                model.ElCorreoElectronico = usuario.CorreoElectronico;
+              
+                string asunto = $"Cambio de clave";
+                string cuerpo = $"Le informamos que el cambio de clave de la cuenta del usuario {model.ElNombre} se ejecutó satisfactoriamente";
+                ElMensajero.SendEmailAsync(model.ElCorreoElectronico, asunto, cuerpo);
+                return RedirectToAction("Index", "Home");
                 }
                 else
                 {

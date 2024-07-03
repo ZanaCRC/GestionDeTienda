@@ -6,9 +6,9 @@ namespace GestionDeTiendaParte1.BL
 {
     public class AdministradorDeUsuarios : IAdministradorDeUsuarios
     {
-        private DA.DBContext ElContextoBD;
+        private DA.DBContexto ElContextoBD;
 
-        public AdministradorDeUsuarios(DA.DBContext elContexto)
+        public AdministradorDeUsuarios(DA.DBContexto elContexto)
         {
             ElContextoBD = elContexto;
         }

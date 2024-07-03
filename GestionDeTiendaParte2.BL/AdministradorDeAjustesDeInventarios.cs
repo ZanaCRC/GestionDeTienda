@@ -9,9 +9,9 @@ namespace GestionDeTiendaParte1.BL
 {
     public class AdministradorDeAjustesDeInventarios : IAdministradorDeAjustesDeInventarios
     {
-        private readonly DA.DBContext ElContexto;
+        private readonly DA.DBContexto ElContexto;
 
-        public AdministradorDeAjustesDeInventarios(DA.DBContext dbContext)
+        public AdministradorDeAjustesDeInventarios(DA.DBContexto dbContext)
         {
             ElContexto = dbContext;
         }

@@ -25,6 +25,7 @@
             <p>Precio: @Html.DisplayFor(modelItem => item.Precio)</p>
            
             <a asp-action="Details" asp-route-id="@item.id" class="btn">Ver Detalles</a>
+            <a asp-action="Edit" asp-route-id="@item.id" class="btn">Editar</a>
         </div>
     }
 </div>

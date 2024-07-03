@@ -10,8 +10,8 @@ namespace GestionDeTiendaParte1.BL
     public class AdministradorDeInventarios: IAdministradorDeInventarios
     {
 
-        private GestionDeTiendaParte1.DA.DBContext ElContextoBD;
-        public AdministradorDeInventarios(DA.DBContext elContexto)
+        private GestionDeTiendaParte1.DA.DBContexto ElContextoBD;
+        public AdministradorDeInventarios(DA.DBContexto elContexto)
         {
             ElContextoBD = elContexto;
         }

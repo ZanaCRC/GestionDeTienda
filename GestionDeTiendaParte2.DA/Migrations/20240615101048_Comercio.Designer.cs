@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestionDeTiendaParte1.DA.Migrations
 {
-    [DbContext(typeof(DBContext))]
+    [DbContext(typeof(DBContexto))]
     [Migration("20240615101048_Comercio")]
     partial class Comercio
     {
