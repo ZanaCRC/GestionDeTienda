@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GestionDeTiendaParte1.BL
+namespace GestionDeTiendaParte2.BL
 {
     public interface IAdministradorDeCorreos
     {

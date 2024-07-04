@@ -1,10 +1,10 @@
-using GestionDeTiendaParte1.UI.Models;
+using GestionDeTiendaParte2.UI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-namespace GestionDeTiendaParte1.UI.Controllers
+namespace GestionDeTiendaParte2.UI.Controllers
 {
     [Authorize]
     public class HomeController : Controller

@@ -1,4 +1,4 @@
-﻿@model GestionDeTiendaParte1.Model.InformacionCaja
+﻿@model GestionDeTiendaParte2.Model.InformacionCaja
 
 <!DOCTYPE html>
 <html lang="es">
@@ -65,7 +65,7 @@
 <body>
     <div class="header">
         <h1>Interfaz de Usuario de Caja</h1>
-        @if (Model?.Caja?.Estado == GestionDeTiendaParte1.Model.EstadoAperturaCaja.Nueva || Model == null || Model.Caja == null)
+        @if (Model?.Caja?.Estado == GestionDeTiendaParte2.Model.EstadoAperturaCaja.Nueva || Model == null || Model.Caja == null)
         {
             <div class="mensaje-advertencia">
                 <p>Advertencia: No hay una caja abierta.</p>
@@ -77,7 +77,7 @@
         }
         else
         {
-            @if (Model.Caja.Estado == GestionDeTiendaParte1.Model.EstadoAperturaCaja.Cerrada)
+            @if (Model.Caja.Estado == GestionDeTiendaParte2.Model.EstadoAperturaCaja.Cerrada)
             {
                 <form method="post" action="@Url.Action("Index", "Cajas")">
                     <input type="hidden" name="accion" value="abrir">
@@ -104,7 +104,7 @@
         }
     </div>
 
-    @if (Model?.Caja?.Estado == GestionDeTiendaParte1.Model.EstadoAperturaCaja.Abierta)
+    @if (Model?.Caja?.Estado == GestionDeTiendaParte2.Model.EstadoAperturaCaja.Abierta)
     {
         <div class="contenido">
             <div class="info-caja">

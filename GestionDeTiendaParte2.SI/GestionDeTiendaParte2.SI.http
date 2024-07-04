@@ -1,0 +1,6 @@
+@GestionDeTiendaParte2.SI_HostAddress = http://localhost:5201
+
+GET {{GestionDeTiendaParte2.SI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

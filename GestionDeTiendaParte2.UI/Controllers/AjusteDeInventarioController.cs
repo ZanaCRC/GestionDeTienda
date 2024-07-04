@@ -1,10 +1,10 @@
-﻿using GestionDeTiendaParte1.Model;
+﻿using GestionDeTiendaParte2.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace GestionDeTiendaParte1.UI.Controllers
+namespace GestionDeTiendaParte2.UI.Controllers
 {
     [Authorize]
     public class AjusteDeInventarioController : Controller
@@ -61,7 +61,7 @@ namespace GestionDeTiendaParte1.UI.Controllers
             TempData["IdDeInventario"] = idInventario;
             var inventario = ElAdministrador.ObtenerInventarioPorId(idInventario);
             ViewBag.CantidadActual = inventario.Cantidad;
-            var ajuste = new GestionDeTiendaParte1.Model.AjusteDeInventario();
+            var ajuste = new GestionDeTiendaParte2.Model.AjusteDeInventario();
             return View(ajuste);
         }
 

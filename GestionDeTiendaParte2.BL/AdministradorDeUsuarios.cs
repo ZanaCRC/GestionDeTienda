@@ -1,8 +1,8 @@
 ﻿ 
 
-using GestionDeTiendaParte1.Model;
+using GestionDeTiendaParte2.Model;
 
-namespace GestionDeTiendaParte1.BL
+namespace GestionDeTiendaParte2.BL
 {
     public class AdministradorDeUsuarios : IAdministradorDeUsuarios
     {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GestionDeTiendaParte1.DA.Migrations
+namespace GestionDeTiendaParte2.DA.Migrations
 {
     /// <inheritdoc />
     public partial class Comercio : Migration

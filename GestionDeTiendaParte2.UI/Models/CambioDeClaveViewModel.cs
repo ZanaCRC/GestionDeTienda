@@ -1,4 +1,4 @@
-﻿namespace GestionDeTiendaParte1.UI.Models
+﻿namespace GestionDeTiendaParte2.UI.Models
 {
     public class CambioDeClaveViewModel
     {

@@ -1,4 +1,4 @@
-﻿using GestionDeTiendaParte1.Model;
+﻿using GestionDeTiendaParte2.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace GestionDeTiendaParte1.BL
+namespace GestionDeTiendaParte2.BL
 {
     public interface IAdministradorDeUsuarios
     {

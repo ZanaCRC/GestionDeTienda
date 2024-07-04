@@ -7,17 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<GestionDeTiendaParte1.BL.IAdministradorDeUsuarios, GestionDeTiendaParte1.BL.AdministradorDeUsuarios>();
-builder.Services.AddScoped<GestionDeTiendaParte1.BL.IAdministradorDeCajas, GestionDeTiendaParte1.BL.AdministradorDeCajas>();
-builder.Services.AddScoped<GestionDeTiendaParte1.BL.IAdministradorDeVentas, GestionDeTiendaParte1.BL.AdministradorDeVentas>();
-builder.Services.AddTransient<GestionDeTiendaParte1.BL.IAdministradorDeCorreos, GestionDeTiendaParte1.BL.AdministradorDeCorreos>();
-builder.Services.AddScoped<GestionDeTiendaParte1.BL.IAdministradorDeAjustesDeInventarios, GestionDeTiendaParte1.BL.AdministradorDeAjustesDeInventarios>();
-builder.Services.AddScoped<GestionDeTiendaParte1.BL.IAdministradorDeInventarios, GestionDeTiendaParte1.BL.AdministradorDeInventarios>();
+builder.Services.AddScoped<GestionDeTiendaParte2.BL.IAdministradorDeUsuarios, GestionDeTiendaParte2.BL.AdministradorDeUsuarios>();
+builder.Services.AddScoped<GestionDeTiendaParte2.BL.IAdministradorDeCajas, GestionDeTiendaParte2.BL.AdministradorDeCajas>();
+builder.Services.AddScoped<GestionDeTiendaParte2.BL.IAdministradorDeVentas, GestionDeTiendaParte2.BL.AdministradorDeVentas>();
+builder.Services.AddTransient<GestionDeTiendaParte2.BL.IAdministradorDeCorreos, GestionDeTiendaParte2.BL.AdministradorDeCorreos>();
+builder.Services.AddScoped<GestionDeTiendaParte2.BL.IAdministradorDeAjustesDeInventarios, GestionDeTiendaParte2.BL.AdministradorDeAjustesDeInventarios>();
+builder.Services.AddScoped<GestionDeTiendaParte2.BL.IAdministradorDeInventarios, GestionDeTiendaParte2.BL.AdministradorDeInventarios>();
 
 
 builder.Configuration.AddUserSecrets<Program>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<GestionDeTiendaParte1.DA.DBContexto>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<GestionDeTiendaParte2.DA.DBContext>(x => x.UseSqlServer(connectionString));
 
 builder.Services.AddAuthentication(options =>
 {

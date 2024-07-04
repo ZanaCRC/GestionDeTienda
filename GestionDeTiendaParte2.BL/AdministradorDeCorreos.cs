@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
 
-namespace GestionDeTiendaParte1.BL
+namespace GestionDeTiendaParte2.BL
 {
     public class AdministradorDeCorreos : IAdministradorDeCorreos
     {

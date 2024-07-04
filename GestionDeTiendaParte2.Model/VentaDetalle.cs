@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GestionDeTiendaParte1.Model
+namespace GestionDeTiendaParte2.Model
 {
     public class VentaDetalle
     {

@@ -1,4 +1,4 @@
-﻿@model GestionDeTiendaParte1.Model.Inventario
+﻿@model GestionDeTiendaParte2.Model.Inventario
 
 @{
     ViewData["Title"] = "Edit";
@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label asp-for="Categoria" class="control-label"></label>
                 <select asp-for="Categoria"
-                        asp-items="Html.GetEnumSelectList<GestionDeTiendaParte1.Model.Categoria>()" class="form-control">
+                        asp-items="Html.GetEnumSelectList<GestionDeTiendaParte2.Model.Categoria>()" class="form-control">
                 </select>
                 <span asp-validation-for="Categoria" class="text-danger"></span>
             </div>

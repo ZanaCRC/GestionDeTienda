@@ -1,4 +1,4 @@
-﻿@model GestionDeTiendaParte1.Model.Venta
+﻿@model GestionDeTiendaParte2.Model.Venta
 
 @{
     ViewData["Title"] = "Terminar Venta";
@@ -35,7 +35,7 @@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
                                 <label asp-for="MetodoDePago" class="control-label">Método de Pago</label>
-                                <select asp-for="MetodoDePago" class="form-control" asp-items="Html.GetEnumSelectList<GestionDeTiendaParte1.Model.MetodoDePago>()">
+                                <select asp-for="MetodoDePago" class="form-control" asp-items="Html.GetEnumSelectList<GestionDeTiendaParte2.Model.MetodoDePago>()">
                                 
                                 </select>
                                 <span asp-validation-for="MetodoDePago" class="text-danger"></span>

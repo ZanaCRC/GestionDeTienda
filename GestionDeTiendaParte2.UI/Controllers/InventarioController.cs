@@ -1,11 +1,11 @@
-﻿using GestionDeTiendaParte1.Model;
+﻿using GestionDeTiendaParte2.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace GestionDeTiendaParte1.UI.Controllers
+namespace GestionDeTiendaParte2.UI.Controllers
 {
     [Authorize]
     public class InventarioController : Controller

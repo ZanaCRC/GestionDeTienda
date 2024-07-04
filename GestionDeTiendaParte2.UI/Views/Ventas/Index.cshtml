@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GestionDeTiendaParte1.Model.Venta>
+﻿@model IEnumerable<GestionDeTiendaParte2.Model.Venta>
 
 @{
     ViewData["Title"] = "Index";
@@ -34,7 +34,7 @@
                 <td>@Html.DisplayFor(modelItem => item.Subtotal)</td>
                 <td>@Html.DisplayFor(modelItem => item.Estado)</td>
                 <td class="text-center">
-                    @if (item.Estado == GestionDeTiendaParte1.Model.EstadoVenta.Proceso)
+                    @if (item.Estado == GestionDeTiendaParte2.Model.EstadoVenta.Proceso)
                     {
                         <div class="btn-group" role="group">
                             <form method="get" action="@Url.Action("AgregarProductosALaVenta", "Ventas")" class="d-inline">

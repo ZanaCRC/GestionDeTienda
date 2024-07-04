@@ -1,10 +1,10 @@
-﻿using GestionDeTiendaParte1.Model;
+﻿using GestionDeTiendaParte2.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace GestionDeTiendaParte1.UI.Controllers
+namespace GestionDeTiendaParte2.UI.Controllers
 {
     [Authorize]
     public class VentasController : Controller

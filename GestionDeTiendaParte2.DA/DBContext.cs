@@ -1,8 +1,8 @@
-﻿using GestionDeTiendaParte1.Model;
+﻿using GestionDeTiendaParte2.Model;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace GestionDeTiendaParte1.DA
+namespace GestionDeTiendaParte2.DA
 {
     public class DBContexto : DbContext
     {

@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using GestionDeTiendaParte1.DA;
-using GestionDeTiendaParte1.Model;
+using GestionDeTiendaParte2.DA;
+using GestionDeTiendaParte2.Model;
 using Microsoft.EntityFrameworkCore;
-using GestionDeTiendaParte1.BL;
+using GestionDeTiendaParte2.BL;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Facebook;
-using GestionDeTiendaParte1.UI.Models;
-using GestionDeTiendaParte1.DA;
-namespace GestionDeTiendaParte1.UI.Controllers
+using GestionDeTiendaParte2.UI.Models;
+
+namespace GestionDeTiendaParte2.UI.Controllers
 {
     public class LoginController : Controller
     {

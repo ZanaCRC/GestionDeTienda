@@ -1,17 +1,17 @@
-﻿using GestionDeTiendaParte1.Model;
+﻿using GestionDeTiendaParte2.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GestionDeTiendaParte1.BL
+namespace GestionDeTiendaParte2.BL
 {
     public class AdministradorDeInventarios: IAdministradorDeInventarios
     {
 
-        private GestionDeTiendaParte1.DA.DBContexto ElContextoBD;
-        public AdministradorDeInventarios(DA.DBContexto elContexto)
+        private GestionDeTiendaParte2.DA.DBContext ElContextoBD;
+        public AdministradorDeInventarios(DA.DBContext elContexto)
         {
             ElContextoBD = elContexto;
         }
