@@ -151,16 +151,14 @@ namespace GestionDeTiendaParte2.UI.Controllers
             
                 var resultado = ElAdministrador.CambiarClave(model.ElNombre, model.NuevaClave);
 
-             
-            Usuario usuario = ElContexto.Usuarios.FirstOrDefault(u => u.Nombre == model.ElNombre);
+            string elCorreo = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value; // Ehte eh //
 
             if (resultado)
             {
-                model.ElCorreoElectronico = usuario.CorreoElectronico;
-              
+                 
                 string asunto = $"Cambio de clave";
                 string cuerpo = $"Le informamos que el cambio de clave de la cuenta del usuario {model.ElNombre} se ejecutó satisfactoriamente";
-                ElMensajero.SendEmailAsync(model.ElCorreoElectronico, asunto, cuerpo);
+                ElMensajero.SendEmailAsync(elCorreo, asunto, cuerpo);
                 return RedirectToAction("Index", "Home");
                 }
                 else

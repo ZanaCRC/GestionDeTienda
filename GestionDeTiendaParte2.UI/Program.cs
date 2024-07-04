@@ -17,7 +17,7 @@ builder.Services.AddScoped<GestionDeTiendaParte2.BL.IAdministradorDeInventarios,
 
 builder.Configuration.AddUserSecrets<Program>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<GestionDeTiendaParte2.DA.DBContext>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<GestionDeTiendaParte2.DA.DBContexto>(x => x.UseSqlServer(connectionString));
 
 builder.Services.AddAuthentication(options =>
 {
