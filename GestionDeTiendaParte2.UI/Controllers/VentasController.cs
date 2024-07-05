@@ -70,40 +70,48 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             TempData["IdGuardado"] = idVenta;
 
-            var uri = $"https://localhost:7001/api/ServicioDeVentas/ListaProductos/{idVenta}";
+
+            var uri = "https://localhost:7001/api/ServicioDeVentas/ObtenerTodoElInventario";
             var response = await httpClient.GetAsync(uri);
-            response.EnsureSuccessStatusCode();
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            var listaDeProductosDelInventario = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
 
-            bool hayError = false;
-            if (TempData.TryGetValue("ErrorAgregarVenta", out var tempDataValue))
+            if (response.IsSuccessStatusCode)
             {
-                if (Boolean.TryParse(tempDataValue?.ToString(), out var parsedValue))
-                {
-                    hayError = parsedValue;
-                }
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                List<Model.ModeloInventario> listaDeProductosDelInventario = JsonConvert.DeserializeObject<List<Model.ModeloInventario>>(apiResponse);
+                return View(listaDeProductosDelInventario);
+            }
+            else
+            {
+                // Manejar el caso cuando la solicitud no fue exitosa (por ejemplo, error 500)
+                // Puedes retornar una vista con un mensaje de error o manejarlo de acuerdo a tus necesidades.
+                // Por ejemplo:
+                ViewBag.ErrorMessage = "Error al obtener la lista de inventario desde el servidor.";
+                return View();
             }
 
-            if (hayError)
-            {
-                ViewData["Error"] = "No hay stock suficiente de un producto";
-            }
-
-            return View(listaDeProductosDelInventario);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AgregarProductosALaVenta(List<Inventario> productosSeleccionados)
+        public async Task<ActionResult> AgregarProductosALaVenta(List<ModeloInventario> productosSeleccionados)
         {
             if (productosSeleccionados != null)
             {
+                // Obtener el Id de Venta desde TempData
                 int IdVenta = (int)TempData["IdGuardado"];
-                var uri = $"https://localhost:7001/api/ServicioDeVentas/AgregarProductos/{IdVenta}";
-                var jsonContent = JsonConvert.SerializeObject(productosSeleccionados);
+
+                // Crear el objeto ModeloAgregarInventarioALaVenta
+                var modeloAgregar = new ModeloAgregarInventarioALaVenta
+                {
+                    idVenta = IdVenta,
+                    productosSeleccionados = productosSeleccionados
+                };
+
+                // Preparar los datos para enviar a la API
+                var uri = "https://localhost:7001/api/ServicioDeVentas/AgregarProductos";
+                var jsonContent = JsonConvert.SerializeObject(modeloAgregar);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
+                // Enviar la solicitud POST a la API
                 var response = await httpClient.PostAsync(uri, content);
                 response.EnsureSuccessStatusCode();
 
@@ -115,17 +123,32 @@ namespace GestionDeTiendaParte2.UI.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> EditarProductosDeVenta(int idVenta)
         {
             TempData["IdGuardado"] = idVenta;
 
-            var uri = $"https://localhost:7001/api/ServicioDeVentas/ListaProductos/{idVenta}";
-            var response = await httpClient.GetAsync(uri);
-            response.EnsureSuccessStatusCode();
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            var listaDeProductosDelInventario = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
+            try
+            {
 
-            return View(listaDeProductosDelInventario);
+                var query = new Dictionary<string, string>()
+                {
+                    ["idVenta"] = idVenta.ToString()
+                };
+
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtenerListaProductosDeVenta", query);
+                var response = await httpClient.GetAsync(uri);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+               
+                var listaDeProductosDelInventario = JsonConvert.DeserializeObject<List<ModeloInventario>>(apiResponse);
+
+                return View(listaDeProductosDelInventario);
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
         }
 
         [HttpPost]
@@ -154,13 +177,29 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             TempData["IdGuardado"] = idVenta;
 
-            var uri = $"https://localhost:7001/api/ServicioDeVentas/ListaProductos/{idVenta}";
-            var response = await httpClient.GetAsync(uri);
-            response.EnsureSuccessStatusCode();
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            var listaDeProductosDelInventario = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
+            try
+            {
 
-            return View(listaDeProductosDelInventario);
+                var query = new Dictionary<string, string>()
+                {
+                    ["idVenta"] = idVenta.ToString()
+                };
+
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtenerListaProductosDeVenta", query);
+                var response = await httpClient.GetAsync(uri);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                //error 500
+                var listaDeProductosDelInventario = JsonConvert.DeserializeObject<List<ModeloParaMostrarInventarioDeUnaVenta>>(apiResponse);
+
+                return View(listaDeProductosDelInventario);
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+  
+
+            
         }
 
         public ActionResult Create()
@@ -210,10 +249,16 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         public async Task<ActionResult> AgregarDescuentoAVenta(int idVenta)
         {
-            var uri = $"https://localhost:7001/api/ServicioDeVentas/ObtenerVenta/{idVenta}";
+            var query = new Dictionary<string, string>()
+            {
+                ["idVenta"] = idVenta.ToString()
+            };
+
+            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtenerVenta", query);
             var response = await httpClient.GetAsync(uri);
-            response.EnsureSuccessStatusCode();
             string apiResponse = await response.Content.ReadAsStringAsync();
+            //error 500
+           
             var ventaAEditar = JsonConvert.DeserializeObject<Venta>(apiResponse);
 
             TempData["IdDeVentaAModificar"] = idVenta;
@@ -226,11 +271,28 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             try
             {
-                int idVentaAModificar = (int)TempData["IdDeVentaAModificar"];
-                var uri = $"https://localhost:7001/api/ServicioDeVentas/AgregarDescuento/{idVentaAModificar}";
-                var jsonContent = JsonConvert.SerializeObject(ventaModificada);
+                var UserIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                if (UserIdClaim != null)
+                {
+                    var groupId = UserIdClaim.Value;
+                    userID = int.Parse(groupId);
+                }
+
+                // Crear el objeto ModeloCrearVenta
+                var modelo = new ModeloAgregarDescuento
+                {
+                   IdVenta = (int)TempData["IdDeVentaAModificar"],
+                   Descuento = ventaModificada.PorcentajeDesCuento
+                };
+
+                // Convertir el objeto a JSON
+                var jsonContent = JsonConvert.SerializeObject(modelo);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
+                // Construir la URI para la API
+                var uri = "https://localhost:7001/api/ServicioDeVentas/AgregarDescuento";
+
+                // Enviar el objeto a la API
                 var response = await httpClient.PostAsync(uri, content);
                 response.EnsureSuccessStatusCode();
 
@@ -240,14 +302,26 @@ namespace GestionDeTiendaParte2.UI.Controllers
             {
                 return View();
             }
+
+
+
+
+
+         
         }
 
         public async Task<ActionResult> TerminarVenta(int idVenta)
         {
-            var uri = $"https://localhost:7001/api/ServicioDeVentas/ObtenerVenta/{idVenta}";
+            var query = new Dictionary<string, string>()
+            {
+                ["idVenta"] = idVenta.ToString()
+            };
+
+            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtenerVenta", query);
             var response = await httpClient.GetAsync(uri);
-            response.EnsureSuccessStatusCode();
             string apiResponse = await response.Content.ReadAsStringAsync();
+            //error 500
+
             var ventaAEditar = JsonConvert.DeserializeObject<Venta>(apiResponse);
 
             TempData["IdDeVentaAModificar"] = idVenta;
@@ -260,13 +334,30 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             try
             {
+                
                 int idVentaAModificar = (int)TempData["IdDeVentaAModificar"];
-                var uri = $"https://localhost:7001/api/ServicioDeVentas/TerminarVenta/{idVentaAModificar}";
-                var jsonContent = JsonConvert.SerializeObject(ventaModificada);
+
+
+
+                // Crear el objeto ModeloCrearVenta
+                var modelo = new ModeloParaFinalizarVenta
+                {
+                    IdVenta = (int)TempData["IdDeVentaAModificar"],
+                    MetodoDePago = ventaModificada.MetodoDePago,
+                };
+
+                // Convertir el objeto a JSON
+                var jsonContent = JsonConvert.SerializeObject(modelo);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
+                // Construir la URI para la API
+                var uri = "https://localhost:7001/api/ServicioDeVentas/TerminarVenta";
+
+                // Enviar el objeto a la API
                 var response = await httpClient.PostAsync(uri, content);
                 response.EnsureSuccessStatusCode();
+
+
 
                 return RedirectToAction(nameof(Index));
             }

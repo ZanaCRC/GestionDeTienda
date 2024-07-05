@@ -77,7 +77,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         public async Task<ActionResult> DetalleDelAjuste(int detalleAjuste)
         {
-            List<AjusteDeInventario> lista;
+            List<ModeloAjusteDeInventario> lista;
             try
             {
                 var query = new Dictionary<string, string>()
@@ -88,7 +88,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustesParaDetalle", query);
                 var response = await _httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                lista = JsonConvert.DeserializeObject<List<AjusteDeInventario>>(apiResponse);
+                lista = JsonConvert.DeserializeObject<List<ModeloAjusteDeInventario>>(apiResponse);
 
                 return View(lista);
             }

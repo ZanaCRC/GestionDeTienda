@@ -1,4 +1,5 @@
 ﻿using GestionDeTiendaParte2.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace GestionDeTiendaParte2.BL
             }
         }
 
-        public List<Model.Venta> BusqueVentasPorIdAperturaCaja(int idAperturaCaja)
+        public List<Model.ModeloVenta> BusqueVentasPorIdAperturaCaja(int idAperturaCaja)
         {
             try
             {
@@ -49,8 +50,8 @@ namespace GestionDeTiendaParte2.BL
                 {
                     ActualiceMontosEnUnaVenta(venta.Id);
                 }
-
-                return ventas;
+                List<ModeloVenta> modeloVentas = ConvertirAVentasModelo(ventas);
+                return modeloVentas;
             }
             catch (Exception ex)
             {
@@ -111,14 +112,14 @@ namespace GestionDeTiendaParte2.BL
             }
         }
 
-        public void AgregueVentaDetalle(int idVentaEnCurso, Inventario productoSeleccionado)
+        public void AgregueVentaDetalle(int idVentaEnCurso, ModeloInventario productoSeleccionado)
         {
             try
             {
                 Model.Inventario productoDelInventario = BusqueProductoDelInventarioPorId(productoSeleccionado.id);
-                Model.VentaDetalle ventaDetalle = BusqueVentaDetallePorIdInventarioYVenta(productoDelInventario.id, idVentaEnCurso);
+                Model.ModeloVentaDetalle modeloVentaDetalle = BusqueVentaDetallePorIdInventarioYVenta(productoDelInventario.id, idVentaEnCurso);
 
-                if (ventaDetalle == null)
+                if (modeloVentaDetalle == null)
                 {
                     if (productoDelInventario.Cantidad >= productoSeleccionado.Cantidad)
                     {
@@ -139,25 +140,47 @@ namespace GestionDeTiendaParte2.BL
                     else
                     {
                         // Manejo de caso donde no hay suficiente cantidad en inventario
-                        // throw new InvalidOperationException("No hay suficiente cantidad en inventario.");
+                        throw new InvalidOperationException("No hay suficiente cantidad en inventario.");
                     }
                 }
                 else
                 {
-                    if (productoDelInventario.Cantidad >= ventaDetalle.Cantidad + productoSeleccionado.Cantidad)
+                    if (productoDelInventario.Cantidad >= modeloVentaDetalle.Cantidad + productoSeleccionado.Cantidad)
                     {
-                        ventaDetalle.Cantidad += productoSeleccionado.Cantidad;
-                        ventaDetalle.Monto = ventaDetalle.Cantidad * ventaDetalle.Precio;
+                        modeloVentaDetalle.Cantidad += productoSeleccionado.Cantidad;
+                        modeloVentaDetalle.Monto = modeloVentaDetalle.Cantidad * modeloVentaDetalle.Precio;
 
                         productoDelInventario.Cantidad -= productoSeleccionado.Cantidad;
 
                         _dbContext.Inventarios.Update(productoDelInventario);
+
+                        // Verifica si la entidad ya está siendo rastreada
+                        var ventaDetalleExistente = _dbContext.VentaDetalles
+                            .Local
+                            .FirstOrDefault(vd => vd.Id == modeloVentaDetalle.Id);
+
+                        if (ventaDetalleExistente != null)
+                        {
+                            _dbContext.Entry(ventaDetalleExistente).State = EntityState.Detached;
+                        }
+
+                        var ventaDetalle = new VentaDetalle
+                        {
+                            Id = modeloVentaDetalle.Id,
+                            Id_Venta = modeloVentaDetalle.Id_Venta,
+                            Id_Inventario = modeloVentaDetalle.Id_Inventario,
+                            Cantidad = modeloVentaDetalle.Cantidad,
+                            Precio = modeloVentaDetalle.Precio,
+                            Monto = modeloVentaDetalle.Monto,
+                            MontoDescuento = modeloVentaDetalle.MontoDescuento
+                        };
+
                         _dbContext.VentaDetalles.Update(ventaDetalle);
                     }
                     else
                     {
                         // Manejo de caso donde no hay suficiente cantidad en inventario
-                        // throw new InvalidOperationException("No hay suficiente cantidad en inventario.");
+                        throw new InvalidOperationException("No hay suficiente cantidad en inventario.");
                     }
                 }
 
@@ -171,15 +194,78 @@ namespace GestionDeTiendaParte2.BL
         }
 
 
+        public ModeloVenta ConvertirAVentaModelo(Venta venta)
+        {
+            var modeloVenta = new ModeloVenta
+            {
+                Id = venta.Id,
+                Fecha = venta.Fecha,
+                NombreCliente = venta.NombreCliente,
+                Total = venta.Total,
+                Subtotal = venta.Subtotal,
+                PorcentajeDesCuento = venta.PorcentajeDesCuento,
+                MontoDescuento = venta.MontoDescuento,
+                Estado = venta.Estado,
+                IdAperturaCaja = venta.IdAperturaCaja,
+                MetodoDePago = venta.MetodoDePago
+            };
 
-        public Model.VentaDetalle BusqueVentaDetallePorIdInventarioYVenta(int idInventario, int idVenta)
+            return modeloVenta;
+        }
+
+        public List<ModeloVenta> ConvertirAVentasModelo(List<Venta> ventas)
+        {
+            var modelosVentas = new List<ModeloVenta>();
+
+            foreach (var venta in ventas)
+            {
+                var modeloVenta = new ModeloVenta
+                {
+                    Id = venta.Id,
+                    Fecha = venta.Fecha,
+                    NombreCliente = venta.NombreCliente,
+                    Total = venta.Total,
+                    Subtotal = venta.Subtotal,
+                    PorcentajeDesCuento = venta.PorcentajeDesCuento,
+                    MontoDescuento = venta.MontoDescuento,
+                    Estado = venta.Estado,
+                    IdAperturaCaja = venta.IdAperturaCaja,
+                    MetodoDePago = venta.MetodoDePago
+                };
+
+                modelosVentas.Add(modeloVenta);
+            }
+
+            return modelosVentas;
+        }
+
+
+        //ayuda dios
+        public Model.ModeloVentaDetalle BusqueVentaDetallePorIdInventarioYVenta(int idInventario, int idVenta)
         {
             try
             {
                 var ventaDetalle = _dbContext.VentaDetalles
                                            .FirstOrDefault(vd => vd.Id_Inventario == idInventario && vd.Id_Venta == idVenta);
 
-                return ventaDetalle;
+                if (ventaDetalle == null)
+                {
+                    
+                    return null; 
+                }
+
+                var modeloVentaDetalle = new ModeloVentaDetalle
+                {
+                    Id = ventaDetalle.Id,
+                    Id_Venta = ventaDetalle.Id_Venta,
+                    Id_Inventario = ventaDetalle.Id_Inventario,
+                    Cantidad = ventaDetalle.Cantidad,
+                    Precio = ventaDetalle.Precio,
+                    Monto = ventaDetalle.Monto,
+                    MontoDescuento = ventaDetalle.MontoDescuento
+                };
+
+                return modeloVentaDetalle;
             }
             catch (Exception ex)
             {
@@ -187,6 +273,7 @@ namespace GestionDeTiendaParte2.BL
                 throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
             }
         }
+
 
         public void ElimineVentaDetalle(int idVenta, int idInventario)
         {
@@ -241,7 +328,7 @@ namespace GestionDeTiendaParte2.BL
             }
         }
 
-        public List<Model.Inventario> ObtenerInventariosPorVenta(int idVenta)
+        public List<ModeloParaMostrarInventarioDeUnaVenta> ObtenerInventariosPorVenta(int idVenta)
         {
             try
             {
@@ -254,13 +341,30 @@ namespace GestionDeTiendaParte2.BL
                                         .Where(inv => idsInventarios.Contains(inv.id))
                                         .ToList();
 
+                var modelosParaMostrar = new List<ModeloParaMostrarInventarioDeUnaVenta>();
+
                 foreach (var inventario in inventarios)
                 {
-                    inventario.VentaDetalles = new List<Model.VentaDetalle>();
-                    inventario.VentaDetalles.Add(BusqueVentaDetallePorIdInventarioYVenta(inventario.id, idVenta));
+                    var modeloVentaDetalle = BusqueVentaDetallePorIdInventarioYVenta(inventario.id, idVenta);
+
+                    if (modeloVentaDetalle != null)
+                    {
+                        var modeloParaMostrar = new ModeloParaMostrarInventarioDeUnaVenta
+                        {
+                            id = inventario.id,
+                            Nombre = inventario.Nombre,
+                            Categoria = inventario.Categoria,
+                            Cantidad = modeloVentaDetalle.Cantidad,
+                            Precio = inventario.Precio,
+                            MontoDescuento = modeloVentaDetalle.MontoDescuento,
+                            Monto = modeloVentaDetalle.Monto
+                        };
+
+                        modelosParaMostrar.Add(modeloParaMostrar);
+                    }
                 }
 
-                return inventarios;
+                return modelosParaMostrar;
             }
             catch (Exception ex)
             {
@@ -268,6 +372,7 @@ namespace GestionDeTiendaParte2.BL
                 throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
             }
         }
+
         public void AgregueDescuento(int id, Model.Venta ventaConDescuento)
         {
             try

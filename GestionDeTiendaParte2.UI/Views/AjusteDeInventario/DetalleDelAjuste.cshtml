@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GestionDeTiendaParte2.Model.AjusteDeInventario>
+﻿@model IEnumerable<GestionDeTiendaParte2.Model.ModeloAjusteDeInventario>
 
 @{
     ViewData["Title"] = "DetalleDelAjuste";
@@ -16,7 +16,7 @@
                 <p>Tipo: @Html.DisplayFor(modelItem => item.Tipo)</p>
                 <p>Observaciones: @Html.DisplayFor(modelItem => item.Observaciones)</p>
                 <p>Fecha: @Html.DisplayFor(modelItem => item.Fecha)</p>
-                <p>Usuario: @Html.DisplayFor(modelItem => item.Usuario.Nombre)</p>
+                <p>Usuario: @Html.DisplayFor(modelItem => item.NombreDeUsuario)</p>
                 <a asp-action="ListaDeAjustes" asp-route-ajuste="@item.Id_Inventario" class="btn btn-back">Volver</a>
             </div>
         }

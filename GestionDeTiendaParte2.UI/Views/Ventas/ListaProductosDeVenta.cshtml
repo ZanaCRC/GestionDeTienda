@@ -1,4 +1,4 @@
-﻿@model  IEnumerable<GestionDeTiendaParte2.Model.Inventario>
+﻿@model  IEnumerable<GestionDeTiendaParte2.Model.ModeloParaMostrarInventarioDeUnaVenta>
 
 @{
     ViewData["Title"] = "ListarProductosDeVenta";
@@ -46,20 +46,20 @@
                 @Html.DisplayFor(modelItem => item.Categoria)
             </td>
             <td>
-                    @item.VentaDetalles.FirstOrDefault().Cantidad
+                   @Html.DisplayFor(modelItem => item.Cantidad)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Precio)
             </td>
                 <td>
-                    @item.VentaDetalles.FirstOrDefault().MontoDescuento
+                    @Html.DisplayFor(modelItem => item.MontoDescuento)
                 </td>
                 <td>
-                    @item.VentaDetalles.FirstOrDefault().Monto
+                    @Html.DisplayFor(modelItem => item.Monto)
                 </td>
                 <td>
                 <td>
-                        @(item.VentaDetalles.FirstOrDefault().Monto - item.VentaDetalles.FirstOrDefault().MontoDescuento)
+                        @Html.DisplayFor(modelItem => item.Subtotal)
                 </td>
 
                 </td>

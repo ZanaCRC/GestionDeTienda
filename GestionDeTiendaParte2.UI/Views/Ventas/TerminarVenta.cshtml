@@ -36,24 +36,28 @@
                             <div class="form-group">
                                 <label asp-for="MetodoDePago" class="control-label">Método de Pago</label>
                                 <select asp-for="MetodoDePago" class="form-control" asp-items="Html.GetEnumSelectList<GestionDeTiendaParte2.Model.MetodoDePago>()">
-                                
                                 </select>
                                 <span asp-validation-for="MetodoDePago" class="text-danger"></span>
+                            </div>
+
+                            @* Campos ocultos para los atributos no modificables *@
+                            @Html.HiddenFor(model => model.Id)
+                            @Html.HiddenFor(model => model.Fecha)
+                            @Html.HiddenFor(model => model.NombreCliente)
+                            @Html.HiddenFor(model => model.Total)
+                            @Html.HiddenFor(model => model.Subtotal)
+                            @Html.HiddenFor(model => model.PorcentajeDesCuento)
+                            @Html.HiddenFor(model => model.MontoDescuento)
+                            @Html.HiddenFor(model => model.Estado)
+                            @Html.HiddenFor(model => model.IdAperturaCaja)
+
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary">Terminar Venta</button>
+                                <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary">Cancelar</a>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row justify-content-center mt-3">
-            <div class="col-md-6">
-                <form asp-action="TerminarVenta">
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary">Terminar Venta</button>
-                        <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary">Cancelar</a>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

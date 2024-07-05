@@ -10,12 +10,12 @@ namespace GestionDeTiendaParte2.BL
     public interface IAdministradorDeVentas
     {
         public void AgregueUnaNuevaVenta(Model.ModeloCrearVenta nuevaVenta, Model.AperturaDeCaja cajaAbierta);
-        public List<Venta> BusqueVentasPorIdAperturaCaja(int IdAperturaCaja);
+        public List<Model.ModeloVenta> BusqueVentasPorIdAperturaCaja(int idAperturaCaja);
         public List<Inventario> ObtenerTodosLosProductos();
         public Inventario BusqueProductoDelInventarioPorId(int idProducto);
-        public void AgregueVentaDetalle(int idVentaEnCurso, Inventario productoSeleccionado);
-        public List<Inventario> ObtenerInventariosPorVenta(int idVenta);
-
+        public void AgregueVentaDetalle(int idVentaEnCurso, ModeloInventario productoSeleccionado);
+        
+        public List<ModeloParaMostrarInventarioDeUnaVenta> ObtenerInventariosPorVenta(int idVenta);
         public Venta BusqueVentasPorId(int Id);
         public void ActualiceMontosEnUnaVenta(int idVentaEnCurso);
         public void ElimineVentaDetalle(int idVenta, int idInventario);
@@ -23,7 +23,9 @@ namespace GestionDeTiendaParte2.BL
 
         public void TermineLaVenta(int id, Model.Venta ventaConDescuento);
         public List<VentaDetalle> ObtenerVentaDetallesPorVenta(int idVenta);
-        public Model.VentaDetalle BusqueVentaDetallePorIdInventarioYVenta(int idInventario, int idVenta);
+        public Model.ModeloVentaDetalle BusqueVentaDetallePorIdInventarioYVenta(int idInventario, int idVenta);
+        public ModeloVenta ConvertirAVentaModelo(Venta venta);
+        public List<ModeloVenta> ConvertirAVentasModelo(List<Venta> ventas);
 
 
     }

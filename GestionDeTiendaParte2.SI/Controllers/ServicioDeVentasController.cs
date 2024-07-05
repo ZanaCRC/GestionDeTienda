@@ -20,7 +20,7 @@ namespace GestionDeTiendaParte2.SI.Controllers
         }
 
         [HttpGet("ObtenerVentas")]
-        public ActionResult<List<Venta>> ObtenerVentas(int userID)
+        public ActionResult<List<ModeloVenta>> ObtenerVentas(int userID)
         {
             
                 var cajaAbierta = elAdministradorDeCajas.BusqueUnaCajaActiva(userID);
@@ -35,21 +35,33 @@ namespace GestionDeTiendaParte2.SI.Controllers
            
         }
 
-
-        [HttpPost("AgregarProductos/{idVenta}")]
-        public IActionResult AgregarProductosALaVenta(int idVenta, [FromBody] List<Inventario> productosSeleccionados)
+        [HttpGet("ObtenerTodoElInventario")]
+        public ActionResult<List<ModeloInventario>> ObtenerTodoElInventario()
         {
-            foreach (var producto in productosSeleccionados)
+
+
+            var listaDeInventario = elAdministradorDeVentas.ObtenerTodosLosProductos();
+            return Ok(listaDeInventario);
+
+
+        }
+
+
+        [HttpPost("AgregarProductos")]
+        public IActionResult AgregarProductosALaVenta([FromBody] ModeloAgregarInventarioALaVenta productosSeleccionados)
+        {
+            foreach (var producto in productosSeleccionados.productosSeleccionados)
             {
                 if (producto.IsSelected)
                 {
-                    elAdministradorDeVentas.AgregueVentaDetalle(idVenta, producto);
+                    elAdministradorDeVentas.AgregueVentaDetalle(productosSeleccionados.idVenta, producto);
                 }
             }
 
-            elAdministradorDeVentas.ActualiceMontosEnUnaVenta(idVenta);
+            elAdministradorDeVentas.ActualiceMontosEnUnaVenta(productosSeleccionados.idVenta);
             return Ok();
         }
+
 
         [HttpPost("EliminarProductos/{idVenta}")]
         public IActionResult EliminarProductosDeVenta(int idVenta, [FromBody] List<int> productosSeleccionados)
@@ -62,8 +74,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return Ok();
         }
 
-        [HttpGet("ListaProductos/{idVenta}")]
-        public ActionResult<List<Inventario>> ObtenerListaProductosDeVenta(int idVenta)
+        [HttpGet("ObtenerListaProductosDeVenta")]
+        public ActionResult<List<ModeloParaMostrarInventarioDeUnaVenta>> ObtenerListaProductosDeVenta(int idVenta)
         {
             var listaDeProductosDelInventario = elAdministradorDeVentas.ObtenerInventariosPorVenta(idVenta);
             return listaDeProductosDelInventario;
@@ -82,7 +94,7 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return Ok();
         }
 
-        [HttpGet("ObtenerVenta/{idVenta}")]
+        [HttpGet("ObtenerVenta")]
         public ActionResult<Venta> ObtenerVenta(int idVenta)
         {
             var venta = elAdministradorDeVentas.BusqueVentasPorId(idVenta);
@@ -94,17 +106,22 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return venta;
         }
 
-        [HttpPost("AgregarDescuento/{idVenta}")]
-        public IActionResult AgregarDescuentoAVenta(int idVenta, [FromBody] Venta ventaModificada)
+        [HttpPost("AgregarDescuento")]
+        public IActionResult AgregarDescuentoAVenta( [FromBody] ModeloAgregarDescuento ventaModificada)
         {
-            elAdministradorDeVentas.AgregueDescuento(idVenta, ventaModificada);
+            Venta ventaConDescuento = new Venta();
+            ventaConDescuento.PorcentajeDesCuento = ventaModificada.Descuento;
+            ventaConDescuento.Id = ventaModificada.IdVenta;
+            elAdministradorDeVentas.AgregueDescuento(ventaModificada.IdVenta, ventaConDescuento);
             return Ok();
         }
 
-        [HttpPost("TerminarVenta/{idVenta}")]
-        public IActionResult TerminarVenta(int idVenta, [FromBody] Venta ventaModificada)
+        [HttpPost("TerminarVenta")]
+        public IActionResult TerminarVenta(ModeloParaFinalizarVenta ventaParaFinalizar)
         {
-            elAdministradorDeVentas.TermineLaVenta(idVenta, ventaModificada);
+            Model.Venta ventaAEnviarParaFinalizar = new Model.Venta();
+            ventaAEnviarParaFinalizar.MetodoDePago = ventaParaFinalizar.MetodoDePago;
+            elAdministradorDeVentas.TermineLaVenta(ventaParaFinalizar.IdVenta, ventaAEnviarParaFinalizar);
             return Ok();
         }
     }

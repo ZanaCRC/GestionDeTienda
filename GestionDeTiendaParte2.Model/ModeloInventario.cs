@@ -23,8 +23,13 @@ namespace GestionDeTiendaParte2.Model
         public string UserName { get; set; }
 
 
-
-
+        public bool IsSelected { get; set; }
+        public ModeloInventario()
+        {
+            
+            Nombre = "sin nombre";
+            UserName ="name";
+        }
 
 
     }
