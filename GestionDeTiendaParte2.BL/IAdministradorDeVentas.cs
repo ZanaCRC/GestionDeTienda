@@ -9,7 +9,7 @@ namespace GestionDeTiendaParte2.BL
 {
     public interface IAdministradorDeVentas
     {
-        public void AgregueUnaNuevaVenta(Model.Venta nuevaVenta, Model.AperturaDeCaja cajaAbierta);
+        public void AgregueUnaNuevaVenta(Model.ModeloCrearVenta nuevaVenta, Model.AperturaDeCaja cajaAbierta);
         public List<Venta> BusqueVentasPorIdAperturaCaja(int IdAperturaCaja);
         public List<Inventario> ObtenerTodosLosProductos();
         public Inventario BusqueProductoDelInventarioPorId(int idProducto);

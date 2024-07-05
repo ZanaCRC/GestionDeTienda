@@ -29,7 +29,7 @@ namespace GestionDeTiendaParte2.BL
             }
         }
 
-        public List<AjusteDeInventario> ObtengaListaDeAjustes(int idInventario)
+        public List<ModeloAjusteDeInventario> ObtengaListaDeAjustes(int idInventario)
         {
             try
             {
@@ -39,7 +39,9 @@ namespace GestionDeTiendaParte2.BL
 
                 CargarNombresUsuarios(ajustes);
 
-                return ajustes;
+                var modelos = ConvertirAjustesDeInventario(ajustes);
+
+                return modelos;
             }
             catch (Exception ex)
             {
@@ -47,7 +49,27 @@ namespace GestionDeTiendaParte2.BL
             }
         }
 
-        public List<AjusteDeInventario> ObtengaListaDeAjustesParaDetalle(int idAjusteInventario)
+
+        public List<ModeloAjusteDeInventario> ConvertirAjustesDeInventario(List<AjusteDeInventario> ajustes)
+        {
+            var modelos = ajustes.Select(a =>
+                new ModeloAjusteDeInventario
+                {
+                    Id = a.Id,
+                    Id_Inventario = a.Id_Inventario,
+                    CantidadActual = a.CantidadActual,
+                    Ajuste = a.Ajuste,
+                    Tipo = a.Tipo,
+                    Observaciones = a.Observaciones,
+                    Fecha = a.Fecha,
+                    UserId = a.UserId,
+                    NombreDeUsuario = a.Usuario.Nombre 
+                }).ToList();
+
+            return modelos;
+        }
+
+        public List<ModeloAjusteDeInventario> ObtengaListaDeAjustesParaDetalle(int idAjusteInventario)
         {
             try
             {
@@ -56,8 +78,8 @@ namespace GestionDeTiendaParte2.BL
                                         .ToList();
 
                 CargarNombresUsuarios(ajustes);
-
-                return ajustes;
+                var modelos = ConvertirAjustesDeInventario(ajustes);
+                return modelos;
             }
             catch (Exception ex)
             {
@@ -65,7 +87,7 @@ namespace GestionDeTiendaParte2.BL
             }
         }
 
-        public bool AgregueAjuste(AjusteDeInventario nuevoAjuste)
+        public bool AgregueAjuste(ModeloAgregarAjuste nuevoAjuste)
         {
             using (var transaction = ElContexto.Database.BeginTransaction())
             {
@@ -102,7 +124,18 @@ namespace GestionDeTiendaParte2.BL
                     nuevoAjuste.Fecha = DateTime.Now;
 
                     ElContexto.Inventarios.Update(inventario);
-                    ElContexto.AjusteDeInventarios.Add(nuevoAjuste);
+                    var ajusteDeInventario = new AjusteDeInventario
+                    {
+                        Id = nuevoAjuste.Id,
+                        Id_Inventario = nuevoAjuste.Id_Inventario,
+                        CantidadActual = nuevoAjuste.CantidadActual,
+                        Ajuste = nuevoAjuste.Ajuste,
+                        Tipo = nuevoAjuste.Tipo,
+                        Observaciones = nuevoAjuste.Observaciones,
+                        Fecha = nuevoAjuste.Fecha,
+                        UserId = nuevoAjuste.UserId
+                    };
+                    ElContexto.AjusteDeInventarios.Add(ajusteDeInventario);
                     ElContexto.SaveChanges();
 
                     transaction.Commit();

@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GestionDeTiendaParte2.UI.Controllers
@@ -9,102 +12,194 @@ namespace GestionDeTiendaParte2.UI.Controllers
     [Authorize]
     public class AjusteDeInventarioController : Controller
     {
-        private BL.IAdministradorDeAjustesDeInventarios ElAdministrador;
-        private BL.IAdministradorDeUsuarios ElAdministradorDeUsuarios;
+        private readonly BL.IAdministradorDeAjustesDeInventarios ElAdministradorDeInventarios;
+        private readonly BL.IAdministradorDeUsuarios ElAdministradorDeUsuarios;
+        private readonly HttpClient _httpClient;
         int userID = 0;
-        public AjusteDeInventarioController(BL.IAdministradorDeAjustesDeInventarios administrador, BL.IAdministradorDeUsuarios elAdministradorDeUsuarios)
+
+        public AjusteDeInventarioController(BL.IAdministradorDeAjustesDeInventarios administrador,
+                                            BL.IAdministradorDeUsuarios elAdministradorDeUsuarios)
         {
-            ElAdministrador = administrador;
+            ElAdministradorDeInventarios = administrador;
             ElAdministradorDeUsuarios = elAdministradorDeUsuarios;
+            _httpClient = new HttpClient();
         }
 
-        public ActionResult Index(string nombre)
+        public async Task<ActionResult> Index(string nombre)
         {
-
-            List<Model.Inventario> lista;
-
-            lista = ElAdministrador.ObtengaLaLista();
-
-            if (nombre is null)
-                return View(lista);
-            else
+            List<Inventario> lista;
+            try
             {
-                List<Model.Inventario> listaDeInventarioFiltrada;
-                listaDeInventarioFiltrada = lista.Where(x => x.Nombre.Contains(nombre)).ToList();
-                return View(listaDeInventarioFiltrada);
+                var respuesta = await _httpClient.GetAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/Lista");
+                string apiResponse = await respuesta.Content.ReadAsStringAsync();
+                lista = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
+
+                if (string.IsNullOrEmpty(nombre))
+                {
+                    return View(lista);
+                }
+                else
+                {
+                    var filteredList = lista.Where(x => x.Nombre.Contains(nombre)).ToList();
+                    return View(filteredList);
+                }
             }
-            return View(lista);
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                return View();
+            }
         }
 
-        public ActionResult ListaDeAjustes(int ajuste)
+        public async Task<ActionResult> ListaDeAjustes(int ajuste)
         {
+            List<ModeloAjusteDeInventario> lista;
+            try
+            {
+                var query = new Dictionary<string, string>()
+                {
+                    ["ajuste"] = ajuste.ToString()
+                };
 
-            List<Model.AjusteDeInventario> lista;
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustes", query);
+                var response = await _httpClient.GetAsync(uri);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                lista = JsonConvert.DeserializeObject<List<ModeloAjusteDeInventario>>(apiResponse);
 
-            lista = ElAdministrador.ObtengaListaDeAjustes(ajuste);
-
-
-            return View(lista);
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                return View();
+            }
         }
 
-        public ActionResult DetalleDelAjuste(int detalleAjuste)
-
+        public async Task<ActionResult> DetalleDelAjuste(int detalleAjuste)
         {
-            List<Model.AjusteDeInventario> lista;
+            List<AjusteDeInventario> lista;
+            try
+            {
+                var query = new Dictionary<string, string>()
+                {
+                    ["detalleAjuste"] = detalleAjuste.ToString()
+                };
 
-            lista = ElAdministrador.ObtengaListaDeAjustesParaDetalle(detalleAjuste);
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustesParaDetalle", query);
+                var response = await _httpClient.GetAsync(uri);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                lista = JsonConvert.DeserializeObject<List<AjusteDeInventario>>(apiResponse);
 
-            return View(lista);
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                return View();
+            }
         }
-        public ActionResult AgregarAjuste(int idInventario)
+
+        public async Task<ActionResult> AgregarAjuste(int idInventario)
         {
-            TempData["IdDeInventario"] = idInventario;
-            var inventario = ElAdministrador.ObtenerInventarioPorId(idInventario);
-            ViewBag.CantidadActual = inventario.Cantidad;
-            var ajuste = new GestionDeTiendaParte2.Model.AjusteDeInventario();
-            return View(ajuste);
+            try
+            {
+                TempData["IdDeInventario"] = idInventario;
+                var query = new Dictionary<string, string>()
+                {
+                    ["idInventario"] = idInventario.ToString()
+                };
+
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/InventarioPorId", query);
+                var response = await _httpClient.GetAsync(uri);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
+                ViewBag.CantidadActual = inventario.Cantidad;
+
+                var ajuste = new AjusteDeInventario();
+                return View(ajuste);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                return View();
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AgregarAjuste(Model.AjusteDeInventario nuevoAjuste)
+        public async Task<ActionResult> AgregarAjuste(AjusteDeInventario nuevoAjuste)
         {
-           
             try
             {
-                var UserIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
-                if (UserIdClaim != null)
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                if (userIdClaim != null)
                 {
-                    var groupId = UserIdClaim.Value;
+                    var groupId = userIdClaim.Value;
                     userID = int.Parse(groupId);
                 }
 
                 nuevoAjuste.UserId = userID;
-
-                int idInventario;
-                idInventario = int.Parse(TempData["IdDeInventario"].ToString());
+                int idInventario = int.Parse(TempData["IdDeInventario"].ToString());
                 nuevoAjuste.Id_Inventario = idInventario;
 
-                if (ElAdministrador.AgregueAjuste(nuevoAjuste))
+
+
+                var modelo = new ModeloAgregarAjuste
+                {
+                    Id = nuevoAjuste.Id,
+                    Id_Inventario = nuevoAjuste.Id_Inventario,
+                    CantidadActual = nuevoAjuste.CantidadActual,
+                    Ajuste = nuevoAjuste.Ajuste,
+                    Tipo = nuevoAjuste.Tipo,
+                    Observaciones = nuevoAjuste.Observaciones,
+                    Fecha = nuevoAjuste.Fecha,
+                    UserId = nuevoAjuste.UserId
+                };
+
+
+
+
+
+
+                string json = JsonConvert.SerializeObject(modelo);
+                var buffer = System.Text.Encoding.UTF8.GetBytes(json);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var response = await _httpClient.PostAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/AgregarAjuste", byteContent);
+
+                if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
                     ModelState.AddModelError("", "Ocurrió un error, por favor intente de nuevo.");
-                   
-                    var inventario = ElAdministrador.ObtenerInventarioPorId(idInventario);
-                    
+                    var inventario = await ObtenerInventarioPorId(idInventario);
                     nuevoAjuste.CantidadActual = inventario.Cantidad;
                     ViewBag.CantidadActual = nuevoAjuste.CantidadActual;
                     return View(nuevoAjuste);
                 }
-                
             }
-            catch
+            catch (Exception ex)
             {
+                // Manejo de errores
                 return View();
             }
+        }
+
+        private async Task<Inventario> ObtenerInventarioPorId(int idInventario)
+        {
+            var query = new Dictionary<string, string>()
+            {
+                ["idInventario"] = idInventario.ToString()
+            };
+
+            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/InventarioPorId", query);
+            var response = await _httpClient.GetAsync(uri);
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
+            return inventario;
         }
     }
 }

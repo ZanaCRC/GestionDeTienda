@@ -6,75 +6,84 @@
 
 <h1 class="display-4 text-center mb-4">Lista de Ventas</h1>
 
-<div class="d-flex justify-content-between mb-3">
-    <form method="get" action="@Url.Action("Create", "Ventas")">
-        <button type="submit" class="btn btn-add icon-slide-lef"><i class="fas fa-plus"></i> Agregar Venta</button>
-    </form>
-    <div>
-        <!-- Aquí podrías agregar otros botones o acciones generales -->
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        No se encontraron ventas registradas.
     </div>
-</div>
+}
+else
+{
+    <div class="d-flex justify-content-between mb-3">
+        <form method="get" action="@Url.Action("Create", "Ventas")">
+            <button type="submit" class="btn btn-add icon-slide-lef"><i class="fas fa-plus"></i> Agregar Venta</button>
+        </form>
+        <div>
+            <!-- Aquí podrías agregar otros botones o acciones generales -->
+        </div>
+    </div>
 
-<table class="table table-hover table-bordered">
-    <thead class="thead-dark">
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.NombreCliente)</th>
-            <th>@Html.DisplayNameFor(model => model.Total)</th>
-            <th>@Html.DisplayNameFor(model => model.Subtotal)</th>
-            <th>@Html.DisplayNameFor(model => model.Estado)</th>
-            <th class="text-center">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.NombreCliente)</td>
-                <td>@Html.DisplayFor(modelItem => item.Total)</td>
-                <td>@Html.DisplayFor(modelItem => item.Subtotal)</td>
-                <td>@Html.DisplayFor(modelItem => item.Estado)</td>
-                <td class="text-center">
-                    @if (item.Estado == GestionDeTiendaParte2.Model.EstadoVenta.Proceso)
-                    {
-                        <div class="btn-group" role="group">
-                            <form method="get" action="@Url.Action("AgregarProductosALaVenta", "Ventas")" class="d-inline">
-                                <input type="hidden" name="idVenta" value="@item.Id" />
-                                <button type="submit" class="btn btn-pop"><i class="fas fa-plus"></i> Agregar</button>
-                            </form>
+                <th>@Html.DisplayNameFor(model => model.NombreCliente)</th>
+                <th>@Html.DisplayNameFor(model => model.Total)</th>
+                <th>@Html.DisplayNameFor(model => model.Subtotal)</th>
+                <th>@Html.DisplayNameFor(model => model.Estado)</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.NombreCliente)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Total)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Subtotal)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Estado)</td>
+                    <td class="text-center">
+                        @if (item.Estado == GestionDeTiendaParte2.Model.EstadoVenta.Proceso)
+                        {
+                            <div class="btn-group" role="group">
+                                <form method="get" action="@Url.Action("AgregarProductosALaVenta", "Ventas")" class="d-inline">
+                                    <input type="hidden" name="idVenta" value="@item.Id" />
+                                    <button type="submit" class="btn btn-pop"><i class="fas fa-plus"></i> Agregar</button>
+                                </form>
 
+                                <form method="get" action="@Url.Action("ListaProductosDeVenta", "Ventas")" class="d-inline">
+                                    <input type="hidden" name="idVenta" value="@item.Id" />
+                                    <button type="submit" class="btn btn-pop"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
+                                </form>
+
+                                <form method="get" action="@Url.Action("EditarProductosDeVenta", "Ventas")" class="d-inline">
+                                    <input type="hidden" name="idVenta" value="@item.Id" />
+                                    <button type="submit" class="btn btn-pop"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                                </form>
+
+                                <form method="get" action="@Url.Action("AgregarDescuentoAVenta", "Ventas")" class="d-inline">
+                                    <input type="hidden" name="idVenta" value="@item.Id" />
+                                    <button type="submit" class="btn btn-pop"><i class="fas fa-percentage"></i> Descuento</button>
+                                </form>
+
+                                <form method="get" action="@Url.Action("TerminarVenta", "Ventas")" class="d-inline">
+                                    <input type="hidden" name="idVenta" value="@item.Id" />
+                                    <button type="submit" class="btn btn-pop"><i class="fas fa-check"></i> Finalizar</button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
                             <form method="get" action="@Url.Action("ListaProductosDeVenta", "Ventas")" class="d-inline">
                                 <input type="hidden" name="idVenta" value="@item.Id" />
                                 <button type="submit" class="btn btn-pop"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
                             </form>
-
-                            <form method="get" action="@Url.Action("EditarProductosDeVenta", "Ventas")" class="d-inline">
-                                <input type="hidden" name="idVenta" value="@item.Id" />
-                                <button type="submit" class="btn btn-pop"><i class="fas fa-trash-alt"></i> Eliminar</button>
-                            </form>
-
-                            <form method="get" action="@Url.Action("AgregarDescuentoAVenta", "Ventas")" class="d-inline">
-                                <input type="hidden" name="idVenta" value="@item.Id" />
-                                <button type="submit" class="btn btn-pop"><i class="fas fa-percentage"></i> Descuento</button>
-                            </form>
-
-                            <form method="get" action="@Url.Action("TerminarVenta", "Ventas")" class="d-inline">
-                                <input type="hidden" name="idVenta" value="@item.Id" />
-                                <button type="submit" class="btn btn-pop"><i class="fas fa-check"></i> Finalizar</button>
-                            </form>
-                        </div>
-                    }
-                    else
-                    {
-                        <form method="get" action="@Url.Action("ListaProductosDeVenta", "Ventas")" class="d-inline">
-                            <input type="hidden" name="idVenta" value="@item.Id" />
-                            <button type="submit" class="btn btn-pop"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-5A6GR+KKplYfXIKghftmWwpTxvDQvcfGdswPHTMJr85Tb6H1POWf3NxBxX+UyzAv" crossorigin="anonymous">
@@ -94,6 +103,7 @@
         .btn i {
             margin-right: 5px;
         }
+
         .btn-pop {
             display: inline-block;
             margin-top: 10px;

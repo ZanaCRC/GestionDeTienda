@@ -43,15 +43,40 @@ namespace GestionDeTiendaParte2.BL
         public List<Model.Inventario> ObtengaLaLista()
         {
             var resultado = from c in ElContextoBD.Inventarios
-                            select c;
+                            select new Model.Inventario
+                            {
+                                id = c.id,
+                                Nombre = c.Nombre,
+                                Categoria = c.Categoria,
+                                Cantidad = c.Cantidad,
+                                Precio = c.Precio
+                               
+                            };
             return resultado.ToList();
         }
+
         public Model.Inventario ObtengaElInventario(int id)
         {
             Model.Inventario resultado;
-            resultado = ElContextoBD.Inventarios.Find(id);
+            resultado = ElContextoBD.Inventarios
+                            .Where(i => i.id == id)
+                            .Select(i => new Model.Inventario
+                            {
+                                id = i.id,
+                                Nombre = i.Nombre,
+                                Categoria = i.Categoria,
+                                Cantidad = i.Cantidad,
+                                Precio = i.Precio
+                                // Excluir UserId
+                            })
+                            .FirstOrDefault();
             return resultado;
+        }
 
+        public List<Model.Inventario> FiltreLaLista(List<Model.Inventario> listaDeLibros, string nombre)
+        {
+
+            return listaDeLibros.Where(x => x.Nombre.Contains(nombre)).ToList();
         }
 
 
@@ -76,20 +101,29 @@ namespace GestionDeTiendaParte2.BL
             return resultado;
         }
 
-        public void Edite(Model.Inventario inventario, string elNombreDelUsuario)
+        public void Edite(Model.ModeloInventario inventario)
         {
-            Model.Historico historico = new Model.Historico();
-            Model.Inventario PorModificar = ObtenerPorId(inventario.id);
+            Model.Inventario inventarioEditado = new Inventario();
 
-            PorModificar.Nombre = inventario.Nombre;
-            PorModificar.Categoria = inventario.Categoria;
-            PorModificar.Precio = inventario.Precio;
+            inventarioEditado.id = inventario.id;
+            inventarioEditado.Nombre = inventario.Nombre;
+            inventarioEditado.Categoria = inventario.Categoria;
+            inventarioEditado.Precio = inventario.Precio;
+            inventarioEditado.Cantidad = inventario.Cantidad;
+
+
+            Model.Historico historico = new Model.Historico();
+            Model.Inventario PorModificar = ObtengaElInventario(inventario.id);
+
+            PorModificar.Nombre = inventarioEditado.Nombre;
+            PorModificar.Categoria = inventarioEditado.Categoria;
+            PorModificar.Precio = inventarioEditado.Precio;
 
             ElContextoBD.Inventarios.Update(PorModificar);
             ElContextoBD.SaveChanges();
 
             historico.ElNombre = inventario.Nombre;
-            historico.NombreUsuario = elNombreDelUsuario;
+            historico.NombreUsuario = inventario.UserName;
             historico.FechaYHora = DateTime.Now;
             historico.ElTipoDeModificacion = Model.TipoModificacion.Edicion;
             historico.IdInventario = inventario.id;

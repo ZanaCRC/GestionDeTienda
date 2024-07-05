@@ -9,18 +9,18 @@ namespace GestionDeTiendaParte2.BL
 {
     public class AdministradorDeCajas : IAdministradorDeCajas
     {
-        private readonly DA.DBContexto _dbContext;
+        private GestionDeTiendaParte2.DA.DBContexto ElContextoBD;
 
         public AdministradorDeCajas(DA.DBContexto dbContext)
         {
-            _dbContext = dbContext;
+            ElContextoBD = dbContext;
         }
 
         public bool TieneElUsuarioAlgunaCajaAbierta(int idUsuario)
         {
             try
             {
-                return _dbContext.AperturasDeCaja
+                return ElContextoBD.AperturasDeCaja
                                 .Any(ac => ac.UserId == idUsuario && ac.Estado == EstadoAperturaCaja.Abierta);
             }
             catch (Exception ex)
@@ -34,7 +34,7 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                return _dbContext.AperturasDeCaja
+                return ElContextoBD.AperturasDeCaja
                                 .FirstOrDefault(ac => ac.UserId == idUsuario && ac.Estado == EstadoAperturaCaja.Abierta);
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                return _dbContext.AperturasDeCaja
+                return ElContextoBD.AperturasDeCaja
                                 .FirstOrDefault(ac => ac.UserId == idUsuario && ac.Estado == EstadoAperturaCaja.Cerrada);
             }
             catch (Exception ex)
@@ -62,7 +62,7 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                return _dbContext.AperturasDeCaja
+                return ElContextoBD.AperturasDeCaja
                                 .FirstOrDefault(ac => ac.UserId == idUsuario && ac.Estado == EstadoAperturaCaja.Nueva);
             }
             catch (Exception ex)
@@ -84,8 +84,8 @@ namespace GestionDeTiendaParte2.BL
                     Observaciones = "Se abrió la caja"
                 };
 
-                _dbContext.AperturasDeCaja.Add(nuevaAperturaDeCaja);
-                _dbContext.SaveChanges();
+                ElContextoBD.AperturasDeCaja.Add(nuevaAperturaDeCaja);
+                ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -105,8 +105,8 @@ namespace GestionDeTiendaParte2.BL
                     Observaciones = "Se registró una nueva caja"
                 };
 
-                _dbContext.AperturasDeCaja.Add(nuevaAperturaDeCaja);
-                _dbContext.SaveChanges();
+                ElContextoBD.AperturasDeCaja.Add(nuevaAperturaDeCaja);
+                ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -126,8 +126,8 @@ namespace GestionDeTiendaParte2.BL
                     cajaPorCerrar.Estado = EstadoAperturaCaja.Cerrada;
                     cajaPorCerrar.Observaciones = "Se cerró la caja";
 
-                    _dbContext.AperturasDeCaja.Update(cajaPorCerrar);
-                    _dbContext.SaveChanges();
+                    ElContextoBD.AperturasDeCaja.Update(cajaPorCerrar);
+                    ElContextoBD.SaveChanges();
                 }
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ namespace GestionDeTiendaParte2.BL
             {
                 var informacionDeLosCalculos = new InformacionCaja();
 
-                var ventas = _dbContext.Ventas
+                var ventas = ElContextoBD.Ventas
                                     .Where(v => v.IdAperturaCaja == idAperturaCaja && v.Estado == EstadoVenta.Terminada)
                                     .ToList();
 

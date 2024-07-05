@@ -17,13 +17,15 @@ namespace GestionDeTiendaParte2.BL
             _dbContext = dbContext;
         }
 
-        public void AgregueUnaNuevaVenta(Model.Venta nuevaVenta, Model.AperturaDeCaja cajaAbierta)
+        public void AgregueUnaNuevaVenta(Model.ModeloCrearVenta nuevaVentaNombre, Model.AperturaDeCaja cajaAbierta)
         {
             try
             {
+                Model.Venta nuevaVenta = new Venta();
                 nuevaVenta.Fecha = DateTime.Now;
                 nuevaVenta.IdAperturaCaja = cajaAbierta.Id;
                 nuevaVenta.Estado = Model.EstadoVenta.Proceso;
+                nuevaVenta.NombreCliente = nuevaVentaNombre.NombreCliente;
 
                 _dbContext.Ventas.Add(nuevaVenta);
                 _dbContext.SaveChanges();

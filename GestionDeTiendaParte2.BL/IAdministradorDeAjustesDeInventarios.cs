@@ -10,9 +10,10 @@ namespace GestionDeTiendaParte2.BL
     public interface IAdministradorDeAjustesDeInventarios
     {
         List<Model.Inventario> ObtengaLaLista();
-        List<Model.AjusteDeInventario> ObtengaListaDeAjustes(int idInventario);
-        List<Model.AjusteDeInventario> ObtengaListaDeAjustesParaDetalle(int idAjusteInventario);
-        bool AgregueAjuste(Model.AjusteDeInventario nuevoAjuste);
+        public List<ModeloAjusteDeInventario> ObtengaListaDeAjustes(int idInventario);
+        public List<ModeloAjusteDeInventario> ObtengaListaDeAjustesParaDetalle(int idAjusteInventario);
+        public bool AgregueAjuste(ModeloAgregarAjuste nuevoAjuste);
         public Inventario ObtenerInventarioPorId(int id);
+        public List<ModeloAjusteDeInventario> ConvertirAjustesDeInventario(List<AjusteDeInventario> ajustes);
     }
 }
