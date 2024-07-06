@@ -33,7 +33,7 @@
                 <Entry 
                     x:Name="UsuarioEntry"
                     Text="{Binding Usuario}"
-                    Placeholder="Nombre de usuario"
+                    Placeholder="Nombre"
                     Keyboard="Email"
                     HorizontalOptions="FillAndExpand"
                     FontSize="18"

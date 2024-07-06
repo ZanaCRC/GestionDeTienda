@@ -10,7 +10,7 @@
         VerticalOptions="Center"
         HorizontalOptions="CenterAndExpand">
 
-        <!-- Título de la página -->
+        
         <Label 
             Text="Gestión de Inventarios"
             FontSize="28"
@@ -18,7 +18,6 @@
             TextColor="#333"
             HorizontalOptions="Center" />
 
-        <!-- Botón para listar inventarios -->
         <Button 
             Text="Listar Inventarios"
             FontSize="18"
@@ -28,9 +27,9 @@
             HorizontalOptions="FillAndExpand"
             Clicked="OnListarInventariosClicked"/>
 
-        <!-- Botón para ver ingresos -->
+       
         <Button 
-            Text="Ver Ingresos"
+            Text="Resumen De Ventas Diarias"
             FontSize="18"
             BackgroundColor="#28A745"
             TextColor="White"
