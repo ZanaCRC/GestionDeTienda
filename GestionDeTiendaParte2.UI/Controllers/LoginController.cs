@@ -81,7 +81,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
         };
                 var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-                var uri = $"https://localhost:7001/api/ServicioDeLogin/IniciarSesion{queryString}";
+                var uri = $"https://apicomercio.azurewebsites.net/api/ServicioDeLogin/IniciarSesion{queryString}";
 
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
@@ -146,7 +146,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
             var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-            var uri = $"https://localhost:7001/api/ServicioDeLogin/EnviarCorreo{queryString}";
+            var uri = $"https://apicomercio.azurewebsites.net/api/ServicioDeLogin/EnviarCorreo{queryString}";
 
             var response = await httpClient.PostAsync(uri, null);
             response.EnsureSuccessStatusCode();

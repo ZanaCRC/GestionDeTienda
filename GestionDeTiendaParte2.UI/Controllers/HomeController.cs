@@ -26,9 +26,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
             return View();
         }
 
-
-
-  
 public async Task<ActionResult> DePermisoAUsuario(int id)
         {
             try
@@ -40,7 +37,7 @@ public async Task<ActionResult> DePermisoAUsuario(int id)
 
                 }; 
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeUsuarios/DePermisos", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeUsuarios/DePermisos", query);
                 var response = await httpClient.PostAsync(uri, null);
                 return RedirectToAction("Index");
             }
@@ -54,7 +51,7 @@ public async Task<ActionResult> DePermisoAUsuario(int id)
 
     public async Task<ActionResult> AdministrarUsuarios()
         {
-            var uri = "https://localhost:7001/api/ServicioDeUsuarios/ObtenerListaDeUsuarios";
+            var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeUsuarios/ObtenerListaDeUsuarios";
             var response = await httpClient.GetAsync(uri);
 
             if (response.IsSuccessStatusCode)

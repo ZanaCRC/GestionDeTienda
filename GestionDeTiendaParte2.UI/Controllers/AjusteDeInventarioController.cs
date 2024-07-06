@@ -31,7 +31,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             var httpClient = new HttpClient();
             try
             {
-                var respuesta = await httpClient.GetAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/Liste");
+                var respuesta = await httpClient.GetAsync("https://apicomercio.azurewebsites.net/api/ServicioDeAjusteDeInventario/Liste");
                 string apiResponse = await respuesta.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
 
@@ -44,7 +44,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                         ["nombre"] = nombre.ToString()
                     };
 
-                    var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/FiltreLaLista", query);
+                    var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeAjusteDeInventario/FiltreLaLista", query);
                     var response = await httpClient.GetAsync(uri);
                     string apiResponse2 = await response.Content.ReadAsStringAsync();
 
@@ -68,7 +68,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["ajuste"] = ajuste.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustes", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustes", query);
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<ModeloAjusteDeInventario>>(apiResponse);
@@ -91,7 +91,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["detalleAjuste"] = detalleAjuste.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustesParaDetalle", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustesParaDetalle", query);
 
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
@@ -115,7 +115,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["idInventario"] = idInventario.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaInventarioPorId", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeAjusteDeInventario/ObtengaInventarioPorId", query);
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
@@ -171,7 +171,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                var response = await httpClient.PostAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/AgregueAjuste", byteContent);
+                var response = await httpClient.PostAsync("https://apicomercio.azurewebsites.net/api/ServicioDeAjusteDeInventario/AgregueAjuste", byteContent);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -199,7 +199,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 ["idInventario"] = idInventario.ToString()
             };
 
-            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaInventarioPorId", query);
+            var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeAjusteDeInventario/ObtengaInventarioPorId", query);
             var response = await httpClient.GetAsync(uri);
             string apiResponse = await response.Content.ReadAsStringAsync();
             var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);

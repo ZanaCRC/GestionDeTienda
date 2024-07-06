@@ -29,7 +29,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             try
             {
 
-                var respuesta = await httpClient.GetAsync("https://localhost:7001/api/ServicioDeInventario/ObtenerLista");
+                var respuesta = await httpClient.GetAsync("https://apicomercio.azurewebsites.net/api/ServicioDeInventario/ObtenerLista");
                 string apiResponse = await respuesta.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<Model.Inventario>>(apiResponse);
 
@@ -43,7 +43,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                         ["nombre"] = nombre.ToString()
                     };
 
-                    var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/FiltreLaLista", query);
+                    var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeInventario/FiltreLaLista", query);
                     var response = await httpClient.GetAsync(uri);
                     string apiResponse2 = await response.Content.ReadAsStringAsync();
 
@@ -66,7 +66,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 {
                     ["idInventario"] = idInventario.ToString()
                 };
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Historico", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeInventario/Historico", query);
                 var response = await httpClient.GetAsync(uri);
 
                 string apiResponse = await response.Content.ReadAsStringAsync();
@@ -89,7 +89,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["id"] = id.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Detalles", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeInventario/Detalles", query);
                 var response = await httpClient.GetAsync(uri);
 
 
@@ -120,7 +120,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 {
                     ["userName"] = userName
                 };
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Agregar", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeInventario/Agregar", query);
 
                 var jsonContent = JsonConvert.SerializeObject(inventario);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
@@ -145,7 +145,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["id"] = id.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Detalles", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeInventario/Detalles", query);
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
@@ -171,7 +171,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["idInventario"] = idInventario.ToString()
                 };
 
-                var uri2 = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Detalles", query);
+                var uri2 = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeInventario/Detalles", query);
                 var response = await httpClient.GetAsync(uri2);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var inventarioBuscado = JsonConvert.DeserializeObject<Inventario>(apiResponse);
@@ -188,7 +188,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
                 inventarioEditado.UserName = userName;
                 
-                string uri = "https://localhost:7001/api/ServicioDeInventario/EditarInventario";
+                string uri = "https://apicomercio.azurewebsites.net/api/ServicioDeInventario/EditarInventario";
 
                 var jsonContent = JsonConvert.SerializeObject(inventarioEditado);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");

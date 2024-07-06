@@ -44,7 +44,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["userID"] = userID.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtengaVentas", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeVentas/ObtengaVentas", query);
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 listaDeVentas = JsonConvert.DeserializeObject<List<Model.Venta>>(apiResponse);
@@ -63,7 +63,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             TempData["IdGuardado"] = idVenta;
 
 
-            var uri = "https://localhost:7001/api/ServicioDeVentas/ObtengaTodoElInventario";
+            var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeVentas/ObtengaTodoElInventario";
             var response = await httpClient.GetAsync(uri);
 
             if (response.IsSuccessStatusCode)
@@ -93,7 +93,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     productosSeleccionados = productosSeleccionados
                 };
 
-                var uri = "https://localhost:7001/api/ServicioDeVentas/AgregueProductos";
+                var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeVentas/AgregueProductos";
                 var jsonContent = JsonConvert.SerializeObject(modeloAgregar);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
@@ -122,7 +122,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["idVenta"] = idVenta.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtengaListaProductosDeVenta", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeVentas/ObtengaListaProductosDeVenta", query);
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                
@@ -143,7 +143,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             if (productosSeleccionados != null)
             {
                 int IdVenta = (int)TempData["IdGuardado"];
-                var uri = $"https://localhost:7001/api/ServicioDeVentas/ElimineProductos/{IdVenta}";
+                var uri = $"https://apicomercio.azurewebsites.net/api/ServicioDeVentas/ElimineProductos/{IdVenta}";
                 var jsonContent = JsonConvert.SerializeObject(productosSeleccionados);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
@@ -170,7 +170,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["idVenta"] = idVenta.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtengaListaProductosDeVenta", query);
+                var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeVentas/ObtengaListaProductosDeVenta", query);
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var listaDeProductosDelInventario = JsonConvert.DeserializeObject<List<ModeloParaMostrarInventarioDeUnaVenta>>(apiResponse);
@@ -212,7 +212,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var jsonContent = JsonConvert.SerializeObject(modeloCrearVenta);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-                var uri = "https://localhost:7001/api/ServicioDeVentas/Cree";
+                var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeVentas/Cree";
 
                 var response = await httpClient.PostAsync(uri, content);
                 response.EnsureSuccessStatusCode();
@@ -233,7 +233,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 ["idVenta"] = idVenta.ToString()
             };
 
-            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtengaVenta", query);
+            var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeVentas/ObtengaVenta", query);
             var response = await httpClient.GetAsync(uri);
             string apiResponse = await response.Content.ReadAsStringAsync();
            
@@ -265,7 +265,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var jsonContent = JsonConvert.SerializeObject(modelo);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-                var uri = "https://localhost:7001/api/ServicioDeVentas/AgregueDescuento";
+                var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeVentas/AgregueDescuento";
 
                 var response = await httpClient.PostAsync(uri, content);
                 response.EnsureSuccessStatusCode();
@@ -291,7 +291,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 ["idVenta"] = idVenta.ToString()
             };
 
-            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeVentas/ObtengaVenta", query);
+            var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeVentas/ObtengaVenta", query);
             var response = await httpClient.GetAsync(uri);
             string apiResponse = await response.Content.ReadAsStringAsync();
 
@@ -320,7 +320,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var jsonContent = JsonConvert.SerializeObject(modelo);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-                var uri = "https://localhost:7001/api/ServicioDeVentas/TermineVenta";
+                var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeVentas/TermineVenta";
 
                 var response = await httpClient.PostAsync(uri, content);
                 response.EnsureSuccessStatusCode();

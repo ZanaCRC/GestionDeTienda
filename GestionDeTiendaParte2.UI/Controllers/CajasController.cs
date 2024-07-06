@@ -33,16 +33,16 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 {
                     if (accion == "cerrar")
                     {
-                        var cerrarResponse = await httpClient.PostAsync($"https://localhost:7001/api/ServicioDeCajas/CierreUnaCaja?userID={userID}", null);
+                        var cerrarResponse = await httpClient.PostAsync($"https://apicomercio.azurewebsites.net/api/ServicioDeCajas/CierreUnaCaja?userID={userID}", null);
                         cerrarResponse.EnsureSuccessStatusCode();
                     }
                     else if (accion == "abrir")
                     {
-                        var abrirResponse = await httpClient.PostAsync($"https://localhost:7001/api/ServicioDeCajas/AbraUnaCaja?userID={userID}", null);
+                        var abrirResponse = await httpClient.PostAsync($"https://apicomercio.azurewebsites.net/api/ServicioDeCajas/AbraUnaCaja?userID={userID}", null);
                         abrirResponse.EnsureSuccessStatusCode();
                     }
 
-                    var response = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeCajas/LaCajaEstaActiva?userID={userID}");
+                    var response = await httpClient.GetAsync($"https://apicomercio.azurewebsites.net/api/ServicioDeCajas/LaCajaEstaActiva?userID={userID}");
                     response.EnsureSuccessStatusCode();
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var cajaAbierta = JsonConvert.DeserializeObject<AperturaDeCaja>(apiResponse);
@@ -51,14 +51,14 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
                     if (cajaAbierta != null)
                     {
-                        var informacionCajaResponse = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeCajas/InformacionCaja?idCaja={cajaAbierta.Id}");
+                        var informacionCajaResponse = await httpClient.GetAsync($"https://apicomercio.azurewebsites.net/api/ServicioDeCajas/InformacionCaja?idCaja={cajaAbierta.Id}");
                         string informacionApiResponse = await informacionCajaResponse.Content.ReadAsStringAsync();
                         informacionRelacionadaALaCajaPorMostrar = JsonConvert.DeserializeObject<InformacionCaja>(informacionApiResponse);
                         informacionRelacionadaALaCajaPorMostrar.Caja = cajaAbierta;
                     }
                     else
                     {
-                        string postUrl = $"https://localhost:7001/api/ServicioDeCajas/RegistreCaja?userID={userID}";
+                        string postUrl = $"https://apicomercio.azurewebsites.net/api/ServicioDeCajas/RegistreCaja?userID={userID}";
                         var registrarResponse = await httpClient.PostAsync(postUrl, null);
 
                         if (registrarResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
