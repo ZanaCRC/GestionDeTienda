@@ -68,7 +68,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             return View();
         }
 
-      
+
         [HttpPost]
         public async Task<ActionResult> Loguearse(UsuarioLoginViewModel usuario)
         {
@@ -86,46 +86,51 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
-                if (elUsuario == null) { 
-                    
-                    ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada"; } else {
-                if (elUsuario.Clave == null ) { ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada"; }
-                
-                if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno && elUsuario.Clave != null)
+                if (elUsuario == null)
                 {
-                    List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, elUsuario.Nombre),
-                new Claim(ClaimTypes.Email, elUsuario.CorreoElectronico),
-                new Claim(ClaimTypes.Role, elUsuario.Rol.ToString()),
-                new Claim("UserId", elUsuario.Id.ToString())
-            };
-
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    AuthenticationProperties prop = new AuthenticationProperties
+                    ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada";
+                }
+                else
+                {
+                    if (elUsuario.EstaBloqueado)
                     {
-                        IsPersistent = true,
-                        AllowRefresh = true
-                    };
+                        await EnviarCorreo(elUsuario.CorreoElectronico, elUsuario.Nombre, $"Usuario Bloqueado. Intento de inicio de sesión del usuario {elUsuario.Nombre} bloqueado.", $"Le informamos que la cuenta del usuario {elUsuario.Nombre} se encuentra bloqueada por 10 minutos. Por favor ingrese el día {elUsuario.FechaBloqueo.Value.AddMinutes(10):dd/MM/yyyy} a las {elUsuario.FechaBloqueo.Value.AddMinutes(10):HH:mm}.");
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), prop);
+                        ViewData["Error"] = "El usuario esta bloqueado";
+                        return View();
+                    }
 
-                    await EnviarCorreo(elUsuario.CorreoElectronico, elUsuario.Nombre, $"Inicio de sesión del usuario {elUsuario.Nombre}.", $"Usted inició sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}.");
-
-                    return RedirectToAction("Index", "Home");
-                }
-                if (elUsuario != null && elUsuario.EsExterno)
+                    if (elUsuario.Clave == null)
+                    {
+                        ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada";
+                    }
+                    else if (response.IsSuccessStatusCode && !elUsuario.EsExterno)
+                    {
+                        List<Claim> claims = new List<Claim>
                 {
-                    ViewData["Error"] = "El usuario ya está logueado con Google o Facebook";
-                    return View();
-                }
-                 if(elUsuario != null && elUsuario.EstaBloqueado)
-                {
-                    await EnviarCorreo(elUsuario.CorreoElectronico, elUsuario.Nombre, $"Usuario Bloqueado. Intento de inicio de sesión del usuario {elUsuario.Nombre} bloqueado.", $"Le informamos que la cuenta del usuario {elUsuario.Nombre} se encuentra bloqueada por 10 minutos. Por favor ingrese el día {elUsuario.FechaBloqueo.Value.AddMinutes(10):dd/MM/yyyy} a las {elUsuario.FechaBloqueo.Value.AddMinutes(10):HH:mm}.");
-                      
-                   
-                    ViewData["Error"] = "El usuario esta bloqueado";
-                    return View();
+                    new Claim(ClaimTypes.Name, elUsuario.Nombre),
+                    new Claim(ClaimTypes.Email, elUsuario.CorreoElectronico),
+                    new Claim(ClaimTypes.Role, elUsuario.Rol.ToString()),
+                    new Claim("UserId", elUsuario.Id.ToString())
+                };
+
+                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        AuthenticationProperties prop = new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            AllowRefresh = true
+                        };
+
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), prop);
+
+                        await EnviarCorreo(elUsuario.CorreoElectronico, elUsuario.Nombre, $"Inicio de sesión del usuario {elUsuario.Nombre}.", $"Usted inició sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}.");
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else if (elUsuario.EsExterno)
+                    {
+                        ViewData["Error"] = "El usuario ya está logueado con Google o Facebook";
+                        return View();
                     }
                 }
             }
