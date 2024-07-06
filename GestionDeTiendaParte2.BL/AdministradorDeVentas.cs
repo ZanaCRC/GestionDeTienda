@@ -128,9 +128,6 @@ namespace GestionDeTiendaParte2.BL
                             Id_Inventario = elProductoDelInventario.id
                         };
 
-                        elProductoDelInventario.Cantidad -= elProductoSeleccionado.Cantidad;
-
-                        ElContextoBD.Inventarios.Update(elProductoDelInventario);
                         ElContextoBD.VentaDetalles.Add(nuevoVentaDetalle);
                     }
                     else
@@ -144,10 +141,6 @@ namespace GestionDeTiendaParte2.BL
                     {
                         elModeloVentaDetalle.Cantidad += elProductoSeleccionado.Cantidad;
                         elModeloVentaDetalle.Monto = elModeloVentaDetalle.Cantidad * elModeloVentaDetalle.Precio;
-
-                        elProductoDelInventario.Cantidad -= elProductoSeleccionado.Cantidad;
-
-                        ElContextoBD.Inventarios.Update(elProductoDelInventario);
 
                         var laVentaDetalleExistente = ElContextoBD.VentaDetalles
                             .Local
@@ -181,7 +174,7 @@ namespace GestionDeTiendaParte2.BL
             }
             catch (Exception ex)
             {
-                throw; 
+                throw;
             }
         }
 
@@ -403,7 +396,7 @@ namespace GestionDeTiendaParte2.BL
             }
         }
 
-        public void TermineLaVenta(int id, Model.Venta ventaConDescuento)
+        public string TermineLaVenta(int id, Model.Venta ventaConDescuento)
         {
             try
             {
@@ -411,14 +404,44 @@ namespace GestionDeTiendaParte2.BL
                 ventaAModificar.MetodoDePago = ventaConDescuento.MetodoDePago;
                 ventaAModificar.Estado = Model.EstadoVenta.Terminada;
 
+                // Disminuir las cantidades en inventario
+                var detallesDeVenta = ElContextoBD.VentaDetalles.Where(vd => vd.Id_Venta == id).ToList();
+                StringBuilder productosNoDisponibles = new StringBuilder();
+
+                foreach (var detalle in detallesDeVenta)
+                {
+                    var productoInventario = ElContextoBD.Inventarios.Find(detalle.Id_Inventario);
+                    if (productoInventario != null && productoInventario.Cantidad >= detalle.Cantidad)
+                    {
+                        productoInventario.Cantidad -= detalle.Cantidad;
+                        ElContextoBD.Inventarios.Update(productoInventario);
+                    }
+                    else
+                    {
+                        if (productoInventario != null)
+                        {
+                            productosNoDisponibles.AppendLine($"Producto: {productoInventario.Nombre}, Cantidad requerida: {detalle.Cantidad}, Cantidad disponible: {productoInventario.Cantidad}");
+                        }
+                    }
+                }
+
+                if (productosNoDisponibles.Length > 0)
+                {
+                    return $"Los siguientes productos no están disponibles en la cantidad requerida:\n{productosNoDisponibles.ToString()}";
+                }
+
                 ElContextoBD.Ventas.Update(ventaAModificar);
                 ElContextoBD.SaveChanges();
+
+                return "Venta finalizada con éxito.";
             }
             catch (Exception ex)
             {
-                throw; 
+                // Manejo de la excepción y posible logging
+                return $"Se produjo un error al finalizar la venta. Por favor, inténtelo de nuevo. Error: {ex.Message}";
             }
         }
+
 
     }
 }

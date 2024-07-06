@@ -21,7 +21,7 @@ namespace GestionDeTiendaParte2.BL
         public void ElimineVentaDetalle(int idVenta, int idInventario);
         public void AgregueDescuento(int id, Model.Venta ventaConDescuento);
 
-        public void TermineLaVenta(int id, Model.Venta ventaConDescuento);
+        public string TermineLaVenta(int id, Model.Venta ventaConDescuento);
         public List<VentaDetalle> ObtenerVentaDetallesPorVenta(int idVenta);
         public Model.ModeloVentaDetalle BusqueVentaDetallePorIdInventarioYVenta(int idInventario, int idVenta);
         public ModeloVenta ConvertirAVentaModelo(Venta venta);

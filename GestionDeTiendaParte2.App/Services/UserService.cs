@@ -63,7 +63,7 @@ namespace GestionDeTiendaParte2.App.Services
 
         public async Task<InformacionCaja> ObtenerInformacionCajasDeHoy()
         {
-            var uri = "https://localhost:7001/api/ServicioDeCajas/InformacionCajasDeHoy";
+            var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeCajas/InformacionCajasDeHoy";
 
             var response = await httpClient.GetAsync(uri);
             if (response.IsSuccessStatusCode)

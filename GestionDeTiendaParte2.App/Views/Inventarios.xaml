@@ -7,16 +7,21 @@
              x:Class="GestionDeTiendaParte2.App.Views.Inventarios"
              Title="Inventarios">
 
-    <VerticalStackLayout x:DataType="vm:InventarioViewModel">
-        
-        <Button Text="Listar Inventarios" Command="{Binding LoadInventariosCommand}"/>
-       
-        <CollectionView ItemsSource="{Binding Inventarios}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:Inventario">
-                    <template:InventarioTemplate/>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </VerticalStackLayout>
+    <ContentPage.BindingContext>
+        <vm:InventarioViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout x:DataType="vm:InventarioViewModel">
+            <Button Text="Listar Inventarios" Command="{Binding LoadInventariosCommand}" />
+
+            <CollectionView ItemsSource="{Binding Inventarios}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Inventario">
+                        <template:InventarioTemplate />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

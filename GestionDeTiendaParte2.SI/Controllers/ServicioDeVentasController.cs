@@ -117,10 +117,20 @@ namespace GestionDeTiendaParte2.SI.Controllers
         [HttpPost("TermineVenta")]
         public IActionResult TermineVenta(ModeloParaFinalizarVenta ventaParaFinalizar)
         {
-            Model.Venta ventaAEnviarParaFinalizar = new Model.Venta();
-            ventaAEnviarParaFinalizar.MetodoDePago = ventaParaFinalizar.MetodoDePago;
-            elAdministradorDeVentas.TermineLaVenta(ventaParaFinalizar.IdVenta, ventaAEnviarParaFinalizar);
-            return Ok();
+            Model.Venta ventaAEnviarParaFinalizar = new Model.Venta
+            {
+                MetodoDePago = ventaParaFinalizar.MetodoDePago
+            };
+
+            string resultado = elAdministradorDeVentas.TermineLaVenta(ventaParaFinalizar.IdVenta, ventaAEnviarParaFinalizar);
+
+            if (resultado.StartsWith("Los siguientes productos"))
+            {
+                return BadRequest(resultado);
+            }
+
+            return Ok(resultado);
         }
+
     }
 }
