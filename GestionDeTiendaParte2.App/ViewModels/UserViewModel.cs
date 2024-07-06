@@ -51,7 +51,7 @@ namespace GestionDeTiendaParte2.App.ViewModels
             {
                 var elUsuario = await userService.IniciarSesion(Usuario, Clave);
 
-                if (elUsuario != null)
+                if (elUsuario != null && elUsuario.Clave != null)
                 {
                 OnLoginSuccess?.Invoke();
                 Shell.Current.Navigation.PushAsync(new Views.Index(), true);
