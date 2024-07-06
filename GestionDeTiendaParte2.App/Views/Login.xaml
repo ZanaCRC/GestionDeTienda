@@ -32,6 +32,7 @@
 
                 <!-- Entrada para el nombre de usuario -->
                 <Entry 
+                    x:Name="UsuarioEntry"
                     Text="{Binding Usuario}"
                     Placeholder="Nombre de usuario"
                     Keyboard="Email"
@@ -43,6 +44,7 @@
 
                 <!-- Entrada para la contraseña -->
                 <Entry 
+                    x:Name="ClaveEntry"
                     Text="{Binding Clave}"
                     Placeholder="Clave"
                     IsPassword="True"

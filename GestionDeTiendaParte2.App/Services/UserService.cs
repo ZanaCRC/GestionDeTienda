@@ -1,9 +1,13 @@
 ﻿using GestionDeTiendaParte2.App.Interfaces;
+using GestionDeTiendaParte2.Model;
+using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace GestionDeTiendaParte2.App.Services
@@ -16,6 +20,29 @@ namespace GestionDeTiendaParte2.App.Services
         {
             httpClient = new HttpClient();
         }
-        
+        public async Task<Usuario> IniciarSesion(string nombre, string clave)
+        {
+            var queryParams = new Dictionary<string, string>
+            {
+                { "nombre", nombre },
+                { "clave", clave }
+            };
+
+            var uri = QueryHelpers.AddQueryString("https://apicomercio.azurewebsites.net/api/ServicioDeLogin/IniciarSesion", queryParams);
+
+            var response = await httpClient.GetAsync(uri);
+            var apiResponse = await response.Content.ReadAsStringAsync();
+            var elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
+
+            if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno)
+            {
+                return elUsuario;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
+

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GestionDeTiendaParte2.App.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +16,13 @@ namespace GestionDeTiendaParte2.App.ViewModels
 
         public ObservableCollection<string> Errors { get; set; } = new();
         private string usuario;
+        private readonly IUserService userService;
+        
+        public event Action OnLoginSuccess;
+        public UserViewModel()
+        {
+            userService = App.Current.Services.GetService<IUserService>();
+        }
         [Required(ErrorMessage = "Usuario es Requerido")]
         
         public string Usuario
@@ -37,18 +45,27 @@ namespace GestionDeTiendaParte2.App.ViewModels
         
 
         [RelayCommand]
-        public async Task IniciarSesion()
-        {
+       
 
-            Errors.Clear();
-            ValidateAllProperties();
-            GetErrors(nameof(Usuario)).ToList().ForEach(n => Errors.Add("Usuario: " + n.ErrorMessage));
-            GetErrors(nameof(Clave)).ToList().ForEach(n => Errors.Add("Clave: " + n.ErrorMessage));
+            private async Task IniciarSesion()
+            {
+                var elUsuario = await userService.IniciarSesion(Usuario, Clave);
 
-            if (Errors.Count > 0) return;
-            
+                if (elUsuario != null)
+                {
+                OnLoginSuccess?.Invoke();
+                Shell.Current.Navigation.PushAsync(new Views.Index(), true);
+
+            }
+                else
+                {
+                    // Manejar caso de credenciales incorrectas o usuario externo
+                    await Application.Current.MainPage.DisplayAlert("Error", "Usuario o contraseña incorrectos", "OK");
+                }
+            }
+
 
 
         }
-    }
+    
 }
