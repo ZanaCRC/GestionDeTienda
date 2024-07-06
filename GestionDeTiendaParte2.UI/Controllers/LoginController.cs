@@ -185,7 +185,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
         };
             var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-            var uri = $"https://localhost:7001/api/ServicioDeLogin/CambiarClave{queryString}";
+            var uri = $"https://apicomercio.azurewebsites.net/api/ServicioDeLogin/CambiarClave{queryString}";
 
             var response = await httpClient.PutAsync(uri, null);
             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -201,7 +201,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
         };
             var queryString2 = QueryHelpers.AddQueryString("", queryParams2);
 
-            var uri2 = $"https://localhost:7001/api/ServicioDeLogin/IniciarSesion{queryString2}";
+            var uri2 = $"https://apicomercio.azurewebsites.net/api/ServicioDeLogin/IniciarSesion{queryString2}";
 
             var response2 = await httpClient.GetAsync(uri2);
             string apiResponse2 = await response2.Content.ReadAsStringAsync();
@@ -243,7 +243,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
         };
                 var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-                var uri = $"https://localhost:7001/api/ServicioDeLogin/GuardarOActualizarUsuarioExterno{queryString}";
+                var uri = $"https://apicomercio.azurewebsites.net/api/ServicioDeLogin/GuardarOActualizarUsuarioExterno{queryString}";
 
                 var response = await httpClient.PostAsync(uri, null);
                 string apiResponse = await response.Content.ReadAsStringAsync();
@@ -293,7 +293,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
         };
                 var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-                var uri = $"https://localhost:7001/api/ServicioDeLogin/GuardarOActualizarUsuarioExterno{queryString}";
+                var uri = $"https://apicomercio.azurewebsites.net/api/ServicioDeLogin/GuardarOActualizarUsuarioExterno{queryString}";
 
                 var response = await httpClient.PostAsync(uri, null);
                 string apiResponse = await response.Content.ReadAsStringAsync();
