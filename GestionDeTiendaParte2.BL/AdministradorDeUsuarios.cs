@@ -44,7 +44,8 @@ namespace GestionDeTiendaParte2.BL
             {
                 if (usuario.EstaBloqueado && usuario.FechaBloqueo.HasValue && usuario.FechaBloqueo.Value.AddMinutes(10) > DateTime.Now)
                 {
-                    return null; 
+                    usuario.Clave = null;
+                    return usuario; 
                 }
                 else if (usuario.Clave == clave)
                 {

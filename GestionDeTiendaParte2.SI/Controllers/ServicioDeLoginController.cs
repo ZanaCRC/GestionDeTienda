@@ -52,5 +52,6 @@ namespace GestionDeTiendaParte2.SI.Controllers
         {
             return administradorDeUsuarios.GuardarOActualizarUsuarioExterno(nombre, correoElectronico);
         }
+
     }
 }

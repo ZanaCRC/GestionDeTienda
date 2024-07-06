@@ -86,14 +86,10 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
-                if (elUsuario == null)
-                {
-                    ViewData["Error"] = "Usuario o contraseña incorrecto"; return View();
-                }
-                else if (elUsuario.Rol == Model.Rol.Restringido) {
-                    ViewData["ErrorRestringido"] = "Usuario sin permisos"; return View(); 
-                }
-                if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno)
+
+                if (elUsuario.Clave != null ||elUsuario==null) { ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada"; }
+                
+                if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno && elUsuario.Clave != null)
                 {
                     List<Claim> claims = new List<Claim>
             {
@@ -116,12 +112,12 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
-                else if (elUsuario != null && elUsuario.EsExterno)
+                if (elUsuario != null && elUsuario.EsExterno)
                 {
                     ViewData["Error"] = "El usuario ya está logueado con Google o Facebook";
                     return View();
                 }
-                else if(elUsuario != null && elUsuario.EstaBloqueado)
+                 if(elUsuario != null && elUsuario.EstaBloqueado)
                 {
                     await EnviarCorreo(elUsuario.CorreoElectronico, elUsuario.Nombre, $"Usuario Bloqueado. Intento de inicio de sesión del usuario {elUsuario.Nombre} bloqueado.", $"Le informamos que la cuenta del usuario {elUsuario.Nombre} se encuentra bloqueada por 10 minutos. Por favor ingrese el día {elUsuario.FechaBloqueo.Value.AddMinutes(10):dd/MM/yyyy} a las {elUsuario.FechaBloqueo.Value.AddMinutes(10):HH:mm}.");
                       
@@ -177,19 +173,48 @@ namespace GestionDeTiendaParte2.UI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CambioDeClave(CambioDeClaveViewModel model)
+        public async Task<ActionResult> CambioDeClave(CambioDeClaveViewModel model)
         {
-            
-                var resultado = ElAdministrador.CambiarClave(model.ElNombre, model.NuevaClave);
+            var queryParams = new Dictionary<string, string>
+        {
+            { "nombre", model.ElNombre },
+            { "nuevaClave", model.NuevaClave }
+        };
+            var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-            string elCorreo = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var uri = $"https://localhost:7001/api/ServicioDeLogin/CambiarClave{queryString}";
+
+            var response = await httpClient.PutAsync(uri, null);
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            var resultado = JsonConvert.DeserializeObject<bool>(apiResponse);
+
+
+
+            //string elCorreo = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var queryParams2 = new Dictionary<string, string>
+        {
+            { "nombre", model.ElNombre },
+            { "clave", model.NuevaClave}
+        };
+            var queryString2 = QueryHelpers.AddQueryString("", queryParams2);
+
+            var uri2 = $"https://localhost:7001/api/ServicioDeLogin/IniciarSesion{queryString2}";
+
+            var response2 = await httpClient.GetAsync(uri2);
+            string apiResponse2 = await response2.Content.ReadAsStringAsync();
+            Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse2);
+
+
+
+
+
 
             if (resultado)
             {
                  
                 string asunto = $"Cambio de clave";
                 string cuerpo = $"Le informamos que el cambio de clave de la cuenta del usuario {model.ElNombre} se ejecutó satisfactoriamente";
-                ElMensajero.SendEmailAsync(elCorreo, asunto, cuerpo);
+                await EnviarCorreo(elUsuario.CorreoElectronico, "", asunto, cuerpo);
                 return RedirectToAction("Index", "Home");
                 }
                 else
@@ -208,13 +233,24 @@ namespace GestionDeTiendaParte2.UI.Controllers
             {
                 string nombre = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                 string correo = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var queryParams = new Dictionary<string, string>
+        {
+            { "nombre", nombre },
+            { "correoElectronico", correo }
+        };
+                var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-                var usuario = ElAdministrador.GuardarOActualizarUsuarioExterno(nombre, correo);
+                var uri = $"https://localhost:7001/api/ServicioDeLogin/GuardarOActualizarUsuarioExterno{queryString}";
+
+                var response = await httpClient.PostAsync(uri, null);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                Usuario usuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
 
                 var newClaims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, usuario.Nombre),
             new Claim("UserId", usuario.Id.ToString()),
+            new Claim("UserRol", usuario.Rol.ToString())
         };
 
                 var claimsIdentity = new ClaimsIdentity(newClaims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -222,6 +258,12 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 {
                     IsPersistent = true
                 };
+                if (usuario.Rol == Rol.Restringido)
+                {
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    ViewData["Error"] = "El Usuario Necesita Permisos";
+                    return RedirectToAction("Loguearse", "Login");
+                }
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
@@ -230,6 +272,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
             return RedirectToAction("Loguearse", "Login");
         }
+
 
         public async Task<IActionResult> FacebookResponse()
         {
@@ -240,7 +283,18 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 string nombre = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                 string correo = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                var usuario = ElAdministrador.GuardarOActualizarUsuarioExterno(nombre, correo);
+                var queryParams = new Dictionary<string, string>
+        {
+            { "nombre", nombre },
+            { "correoElectronico", correo }
+        };
+                var queryString = QueryHelpers.AddQueryString("", queryParams);
+
+                var uri = $"https://localhost:7001/api/ServicioDeLogin/GuardarOActualizarUsuarioExterno{queryString}";
+
+                var response = await httpClient.PostAsync(uri, null);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                Usuario usuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
                 var newClaims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, usuario.Nombre),
