@@ -1,8 +1,6 @@
 ﻿using GestionDeTiendaParte2.Model;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace GestionDeTiendaParte2.SI.Controllers
 {
     [Route("api/[controller]")]

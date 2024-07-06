@@ -21,7 +21,7 @@ namespace GestionDeTiendaParte2.BL
         public List<Model.Usuario> ObtenerTodosLosUsuarios()
         {
             var todosLosUsuarios = ElContextoBD.Usuarios.ToList(); 
-            var usuariosFiltrados = todosLosUsuarios.Where(u => u.Rol == Model.Rol.Restringido).ToList(); // Filtrar los que no tienen ID 123
+            var usuariosFiltrados = todosLosUsuarios.Where(u => u.Rol == Model.Rol.Restringido).ToList(); 
             return usuariosFiltrados;
         }
         public void DePermisos(int id)
@@ -44,12 +44,11 @@ namespace GestionDeTiendaParte2.BL
             {
                 if (usuario.EstaBloqueado && usuario.FechaBloqueo.HasValue && usuario.FechaBloqueo.Value.AddMinutes(10) > DateTime.Now||usuario.Rol!=Model.Rol.ConPermiso)
                 {
-                    // Usuario bloqueado y aún no ha pasado el tiempo de bloqueo
-                    return null; // O manejar de otra manera específica
+                    return null; 
                 }
                 else if (usuario.Clave == clave)
                 {
-                    usuario.IntentosFallidos = 0; // Reiniciar intentos fallidos
+                    usuario.IntentosFallidos = 0; 
                     usuario.EstaBloqueado = false;
                     usuario.FechaBloqueo = null;
                     ElContextoBD.SaveChanges();
@@ -64,7 +63,7 @@ namespace GestionDeTiendaParte2.BL
                         usuario.FechaBloqueo = DateTime.Now;
                     }
                     ElContextoBD.SaveChanges();
-                    return null; // O manejar de otra manera específica
+                    return null; 
                 }
             }
 
@@ -116,18 +115,16 @@ namespace GestionDeTiendaParte2.BL
 
         public Usuario GuardarOActualizarUsuarioExterno(string nombre, string correo)
         {
-            // Buscar un usuario por su proveedor y proveedorUserId
             var usuario = ElContextoBD.Usuarios.FirstOrDefault(u => u.Nombre == nombre && u.CorreoElectronico == correo);
 
             if (usuario == null)
             {
-                // Si no existe, crear uno nuevo y guardarlo en la base de datos
                 usuario = new Usuario
                 {
                     Nombre = nombre,
                     Rol = Rol.Restringido,   
                     CorreoElectronico = correo,
-                    Clave = "",// Asumiendo que todos los usuarios externos inician con un rol normal
+                    Clave = "",
                     IntentosFallidos = 0,
                     EstaBloqueado = false,
                     FechaBloqueo = null,
@@ -137,7 +134,6 @@ namespace GestionDeTiendaParte2.BL
             }
             else
             {
-                // Si existe, actualizar su nombre si es necesario
                 if (usuario.Nombre != nombre)
                 {
                     usuario.Nombre = nombre;

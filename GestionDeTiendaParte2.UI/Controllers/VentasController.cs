@@ -55,14 +55,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             {
                 return View();
             }
-
-
-
         }
-
-
-
-
 
 
         public async Task<ActionResult> AgregarProductosALaVenta(int idVenta)

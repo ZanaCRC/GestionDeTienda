@@ -56,8 +56,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 return View(ex);
             }
 
-
-
         }
 
         public async Task<ActionResult> Historico()
@@ -127,21 +125,14 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             try
             {
-                // Obtener el id del inventario
                 int idInventario = inventario.id;
 
-                // Obtener el inventario actual desde la API
                 var response = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeInventario/Detalles/{idInventario}");
                 response.EnsureSuccessStatusCode();
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var inventarioBuscado = JsonConvert.DeserializeObject<Inventario>(apiResponse);
 
-                // Obtener el nombre de usuario actual
                 string userName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
-
-
-
 
                 Model.ModeloInventario inventarioEditado = new ModeloInventario (); 
                 inventarioEditado.id = inventario.id;
@@ -151,13 +142,10 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 inventarioEditado.Cantidad = inventarioBuscado.Cantidad;
 
 
-                // Actualizar los datos del inventario buscado
                 inventarioEditado.UserName = userName;
                 
-                // Construir la URL del endpoint de la API
                 string uri = "https://localhost:7001/api/ServicioDeInventario/EditarInventario";
 
-                // Serializar el inventario actualizado y enviarlo al servidor
                 var jsonContent = JsonConvert.SerializeObject(inventarioEditado);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
@@ -171,13 +159,11 @@ namespace GestionDeTiendaParte2.UI.Controllers
            }
             catch (HttpRequestException ex)
             {
-                // Captura y maneja errores HTTP (como 400, 500, etc.) que podrían surgir al llamar a la API
                 ViewBag.ErrorMessage = $"Error al actualizar el inventario: {ex.Message}";
                 return View();
             }
             catch (Exception ex)
             {
-                // Captura cualquier otra excepción inesperada
                 ViewBag.ErrorMessage = $"Ocurrió un error inesperado: {ex.Message}";
                 return View();
             }

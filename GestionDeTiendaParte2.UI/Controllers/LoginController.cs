@@ -57,7 +57,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                // Si llegamos aquí, es porque hubo un fallo en el registro
                 return View(usuario);
             }
             return View(usuario);
@@ -74,27 +73,21 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Construir los parámetros de consulta usando QueryHelpers
                 var queryParams = new Dictionary<string, string>
         {
             { "nombre", usuario.Nombre },
             { "clave", usuario.Clave }
         };
-
-                // Construir la cadena de consulta
                 var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-                // URI para llamar al método de inicio de sesión en la API
                 var uri = $"https://localhost:7001/api/ServicioDeLogin/IniciarSesion{queryString}";
 
-                // Enviar la solicitud GET a la API
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
                 if (elUsuario==null) { ViewData["ErrorRestringido"] = "Usuario sin permisos"; return View(); }
                 if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno)
                 {
-                    // Crear claims para la autenticación
                     List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, elUsuario.Nombre),
@@ -103,7 +96,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 new Claim("UserId", elUsuario.Id.ToString())
             };
 
-                    // Crear identidad de claims
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     AuthenticationProperties prop = new AuthenticationProperties
                     {
@@ -111,37 +103,30 @@ namespace GestionDeTiendaParte2.UI.Controllers
                         AllowRefresh = true
                     };
 
-                    // Autenticar al usuario
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), prop);
 
-                    // Enviar correo de inicio de sesión
                     await EnviarCorreoInicioSesion(elUsuario.CorreoElectronico, elUsuario.Nombre);
 
-                    // Redirigir al usuario a la página de inicio
                     return RedirectToAction("Index", "Home");
                 }
                 else if (elUsuario != null && elUsuario.EsExterno)
                 {
-                    // Manejar caso de usuario externo (Google o Facebook)
                     ViewData["Error"] = "El usuario ya está logueado con Google o Facebook";
                     return View();
                 }
                 else
                 {
-                    // Manejar caso de credenciales incorrectas
                     ViewData["Error"] = "Usuario o contraseña incorrectos";
                     return View();
                 }
             }
 
-            // Si el modelo no es válido, volver a mostrar la vista de login
             return View();
         }
 
 
         private async Task EnviarCorreoInicioSesion(string correoElectronico, string nombre)
         {
-            // Construir los parámetros de consulta usando QueryHelpers
             var queryParams = new Dictionary<string, string>
     {
         { "asunto", $"Inicio de sesión del usuario {nombre}." },
@@ -149,13 +134,10 @@ namespace GestionDeTiendaParte2.UI.Controllers
         { "correoElectronico", correoElectronico }
     };
 
-            // Construir la cadena de consulta
             var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-            // URI para llamar al método de enviar correo en la API
             var uri = $"https://localhost:7001/api/ServicioDeLogin/EnviarCorreo{queryString}";
 
-            // Enviar la solicitud POST a la API
             var response = await httpClient.PostAsync(uri, null);
             response.EnsureSuccessStatusCode();
         }
@@ -190,7 +172,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             
                 var resultado = ElAdministrador.CambiarClave(model.ElNombre, model.NuevaClave);
 
-            string elCorreo = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value; // Ehte eh //
+            string elCorreo = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
             if (resultado)
             {
@@ -202,12 +184,9 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 }
                 else
                 {
-                    // Manejar el caso de error (usuario no encontrado o es externo)
                     ViewData["Error"] = "Algo ha salido mal.";
                     return View();
             }
-            
-
             
         }
 
@@ -220,15 +199,12 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 string nombre = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                 string correo = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                // Guardar o actualizar el usuario en la base de datos y obtener el usuario
                 var usuario = ElAdministrador.GuardarOActualizarUsuarioExterno(nombre, correo);
 
-                // Crear una nueva lista de claims incluyendo el ID del usuario de la base de datos
                 var newClaims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, usuario.Nombre),
             new Claim("UserId", usuario.Id.ToString()),
-            // Agrega aquí más claims según sea necesario
         };
 
                 var claimsIdentity = new ClaimsIdentity(newClaims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -254,15 +230,11 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 string nombre = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                 string correo = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                // Guardar o actualizar el usuario en la base de datos y obtener el usuario
                 var usuario = ElAdministrador.GuardarOActualizarUsuarioExterno(nombre, correo);
-
-                // Crear una nueva lista de claims incluyendo el ID del usuario de la base de datos
                 var newClaims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, usuario.Nombre),
             new Claim("UserId", usuario.Id.ToString()),
-            // Agrega aquí más claims según sea necesario
         };
 
                 var claimsIdentity = new ClaimsIdentity(newClaims, CookieAuthenticationDefaults.AuthenticationScheme);
