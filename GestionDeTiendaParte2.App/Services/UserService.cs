@@ -60,6 +60,23 @@ namespace GestionDeTiendaParte2.App.Services
 
             return lista;
         }
+
+        public async Task<InformacionCaja> ObtenerInformacionCajasDeHoy()
+        {
+            var uri = "https://localhost:7001/api/ServicioDeCajas/InformacionCajasDeHoy";
+
+            var response = await httpClient.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                var informacionCajas = JsonConvert.DeserializeObject<InformacionCaja>(apiResponse);
+                return informacionCajas;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
 

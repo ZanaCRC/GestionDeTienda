@@ -61,6 +61,7 @@ namespace GestionDeTiendaParte2.BL
                     {
                         usuario.EstaBloqueado = true;
                         usuario.FechaBloqueo = DateTime.Now;
+
                     }
                     ElContextoBD.SaveChanges();
                     return null; 

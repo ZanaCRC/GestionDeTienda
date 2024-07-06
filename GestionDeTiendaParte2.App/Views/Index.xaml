@@ -35,7 +35,8 @@
             BackgroundColor="#28A745"
             TextColor="White"
             CornerRadius="10"
-            HorizontalOptions="FillAndExpand" />
+            HorizontalOptions="FillAndExpand" 
+            Clicked="OnListarVentasClicked"/>
 
         <!-- Botón para cerrar sesión -->
         <Button 

@@ -8,6 +8,7 @@ namespace GestionDeTiendaParte2.Model
         [Required(ErrorMessage = "El Nombre es requerido.")]
         public string Nombre { get; set; }
         [Required(ErrorMessage = "El Correo Electrónico es requerido.")]
+        [Display(Name = "Correo Electrónico")]
         public string CorreoElectronico { get; set; }
         [Required(ErrorMessage = "La Clave es requerida.")]
         public string Clave { get; set; }

@@ -4,48 +4,42 @@
     ViewData["Title"] = "AdministrarUsuarios";
 }
 
-<h1>Administrar Usuarios</h1>
+<div class="container">
+    <h1 class="mt-5">Administrar Usuarios</h1>
+    <table class="table table-striped table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CorreoElectronico)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Rol)
+                </th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CorreoElectronico)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rol)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Otorgar permiso", "DePermisoAUsuario", "Home", new { id = item.Id }, new { @class = "btn btn-primary" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-
-<table class="table">
-    <thead>
-        <tr>
-           
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CorreoElectronico)
-            </th>
-           
-            <th>
-                @Html.DisplayNameFor(model => model.Rol)
-            </th>
-           
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-          
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CorreoElectronico)
-            </td>
-           
-            <td>
-                @Html.DisplayFor(modelItem => item.Rol)
-            </td>
-           
-            <td>
-                    @Html.ActionLink("DePermisoAUsuario", "DePermisoAUsuario", "Home", new { id = item.Id }, null)
-
-               
-            </td>
-        </tr>
-}
-    </tbody>
-</table>

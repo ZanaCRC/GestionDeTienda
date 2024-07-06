@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GestionDeTiendaParte2.UI.Controllers
 {
@@ -111,7 +112,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), prop);
 
-                    await EnviarCorreoInicioSesion(elUsuario.CorreoElectronico, elUsuario.Nombre);
+                    await EnviarCorreo(elUsuario.CorreoElectronico, elUsuario.Nombre, $"Inicio de sesión del usuario {elUsuario.Nombre}.", $"Usted inició sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}.");
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -120,9 +121,12 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ViewData["Error"] = "El usuario ya está logueado con Google o Facebook";
                     return View();
                 }
-                else
+                else if(elUsuario != null && elUsuario.EstaBloqueado)
                 {
-                    ViewData["Error"] = "Usuario o contraseña incorrectos";
+                    await EnviarCorreo(elUsuario.CorreoElectronico, elUsuario.Nombre, $"Usuario Bloqueado. Intento de inicio de sesión del usuario {elUsuario.Nombre} bloqueado.", $"Le informamos que la cuenta del usuario {elUsuario.Nombre} se encuentra bloqueada por 10 minutos. Por favor ingrese el día {elUsuario.FechaBloqueo.Value.AddMinutes(10):dd/MM/yyyy} a las {elUsuario.FechaBloqueo.Value.AddMinutes(10):HH:mm}.");
+                      
+                   
+                    ViewData["Error"] = "El usuario esta bloqueado";
                     return View();
                 }
             }
@@ -131,12 +135,12 @@ namespace GestionDeTiendaParte2.UI.Controllers
         }
 
 
-        private async Task EnviarCorreoInicioSesion(string correoElectronico, string nombre)
+        private async Task EnviarCorreo(string correoElectronico, string nombre, string asunto, string cuerpo)
         {
             var queryParams = new Dictionary<string, string>
     {
-        { "asunto", $"Inicio de sesión del usuario {nombre}." },
-        { "cuerpo", $"Usted inició sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}." },
+        { "asunto", asunto },
+        { "cuerpo", cuerpo },
         { "correoElectronico", correoElectronico }
     };
 
