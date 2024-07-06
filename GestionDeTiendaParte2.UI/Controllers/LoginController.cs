@@ -86,8 +86,10 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
-
-                if (elUsuario.Clave != null ||elUsuario==null) { ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada"; }
+                if (elUsuario == null) { 
+                    
+                    ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada"; } else {
+                if (elUsuario.Clave == null ) { ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada"; }
                 
                 if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno && elUsuario.Clave != null)
                 {
@@ -124,6 +126,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                    
                     ViewData["Error"] = "El usuario esta bloqueado";
                     return View();
+                    }
                 }
             }
 
