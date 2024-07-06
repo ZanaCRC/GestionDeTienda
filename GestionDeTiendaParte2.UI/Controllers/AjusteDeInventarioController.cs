@@ -83,7 +83,8 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["detalleAjuste"] = detalleAjuste.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Historico", query);
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustesParaDetalle", query);
+
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<ModeloAjusteDeInventario>>(apiResponse);
