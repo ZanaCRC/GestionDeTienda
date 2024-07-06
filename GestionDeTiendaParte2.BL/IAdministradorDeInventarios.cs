@@ -15,6 +15,6 @@ namespace GestionDeTiendaParte2.BL
         public Model.Inventario ObtenerPorId(int Id);
         public List<Model.Inventario> ObtengaLaLista();
         public List<Model.Historico> ObtengaHistorico();
-        public List<Model.Inventario> FiltreLaLista(List<Model.Inventario> listaDeLibros, string nombre);
+        public List<Model.Inventario> FiltreLaLista(string nombre);
     }
 }

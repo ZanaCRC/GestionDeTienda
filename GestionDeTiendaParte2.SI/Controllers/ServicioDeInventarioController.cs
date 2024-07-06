@@ -22,13 +22,12 @@ namespace GestionDeTiendaParte2.SI.Controllers
             var lista = elAdministrador.ObtengaLaLista();
            
                 return lista;
-            
         }
 
-        [HttpPost("FiltreLaLista")]
-        public List<Model.Inventario> FiltreLaLista(List<Model.Inventario> listaPorFiltrar, string nombre)
+        [HttpGet("FiltreLaLista")]
+        public List<Model.Inventario> FiltreLaLista(string nombre)
         {
-            return elAdministrador.FiltreLaLista(listaPorFiltrar, nombre);
+            return elAdministrador.FiltreLaLista(nombre);
         }
 
         [HttpGet("Historico")]
@@ -59,10 +58,6 @@ namespace GestionDeTiendaParte2.SI.Controllers
         [HttpPut("EditarInventario")]
         public IActionResult EditarInventario([FromBody] ModeloInventario inventario)
         {
-
-           
-
-
             elAdministrador.Edite(inventario);
             return Ok();
         }

@@ -22,6 +22,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         public async Task<ActionResult> Index(string nombre)
         {
+           
 
             List<Model.Inventario> lista;
             var httpClient = new HttpClient();
@@ -35,29 +36,24 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 if (nombre is null)
                     return View(lista);
                 else
-                {
+                { 
+  
+                    var query = new Dictionary<string, string>()
+                    {
+                        ["nombre"] = nombre.ToString()
+                    };
 
-                    var httpClient2 = new HttpClient();
-                    string json = JsonConvert.SerializeObject(lista);
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(json);
-                    var byteContent = new ByteArrayContent(buffer);
-                    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                    var uri = $"https://localhost:7195/api/ServicioDeInventario/FiltreLaLista?nombre={nombre}";
-
-
-                    var response = await httpClient.PostAsync(uri, byteContent);
-
-                    response.EnsureSuccessStatusCode();
-
+                    var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/FiltreLaLista", query);
+                    var response = await httpClient.GetAsync(uri);
                     string apiResponse2 = await response.Content.ReadAsStringAsync();
+
                     var listaFiltrada = JsonConvert.DeserializeObject<List<Model.Inventario>>(apiResponse2);
                     return View(listaFiltrada);
                 }
             }
             catch (Exception ex)
             {
-                return View();
+                return View(ex);
             }
 
 

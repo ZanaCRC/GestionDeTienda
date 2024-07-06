@@ -14,7 +14,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
     {
         private readonly BL.IAdministradorDeAjustesDeInventarios ElAdministradorDeInventarios;
         private readonly BL.IAdministradorDeUsuarios ElAdministradorDeUsuarios;
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient httpClient;
         int userID = 0;
 
         public AjusteDeInventarioController(BL.IAdministradorDeAjustesDeInventarios administrador,
@@ -22,7 +22,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             ElAdministradorDeInventarios = administrador;
             ElAdministradorDeUsuarios = elAdministradorDeUsuarios;
-            _httpClient = new HttpClient();
+            httpClient = new HttpClient();
         }
 
         public async Task<ActionResult> Index(string nombre)
@@ -30,7 +30,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             List<Inventario> lista;
             try
             {
-                var respuesta = await _httpClient.GetAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/Lista");
+                var respuesta = await httpClient.GetAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/Lista");
                 string apiResponse = await respuesta.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
 
@@ -62,7 +62,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 };
 
                 var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustes", query);
-                var response = await _httpClient.GetAsync(uri);
+                var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<ModeloAjusteDeInventario>>(apiResponse);
 
@@ -86,7 +86,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 };
 
                 var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaListaDeAjustesParaDetalle", query);
-                var response = await _httpClient.GetAsync(uri);
+                var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<ModeloAjusteDeInventario>>(apiResponse);
 
@@ -110,7 +110,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 };
 
                 var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/InventarioPorId", query);
-                var response = await _httpClient.GetAsync(uri);
+                var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
                 ViewBag.CantidadActual = inventario.Cantidad;
@@ -166,7 +166,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                var response = await _httpClient.PostAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/AgregarAjuste", byteContent);
+                var response = await httpClient.PostAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/AgregarAjuste", byteContent);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -196,7 +196,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             };
 
             var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/InventarioPorId", query);
-            var response = await _httpClient.GetAsync(uri);
+            var response = await httpClient.GetAsync(uri);
             string apiResponse = await response.Content.ReadAsStringAsync();
             var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
             return inventario;
