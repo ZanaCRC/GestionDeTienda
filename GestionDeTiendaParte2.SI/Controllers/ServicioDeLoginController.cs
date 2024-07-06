@@ -26,12 +26,10 @@ namespace GestionDeTiendaParte2.SI.Controllers
         }
 
         [HttpPost("EnviarCorreo")]
-        public Task EnviarCorreo(Model.ModeloUsuario elUsuario)
+        public void EnviarCorreo(string asunto, string cuerpo, string correoElectronico)
         {
-            string asunto = $"Inicio de sesión del usuario {elUsuario.Nombre}.";
-            string cuerpo = $"Usted inicio sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}.";
-            return administradorDeCorreos.SendEmailAsync(elUsuario.CorreoElectronico, asunto, cuerpo);
-        }
+            administradorDeCorreos.SendEmailAsync(correoElectronico, asunto, cuerpo);
+                   }
 
         [HttpGet("IniciarSesion")]
         public Model.Usuario IniciarSesion(string nombre, string clave)

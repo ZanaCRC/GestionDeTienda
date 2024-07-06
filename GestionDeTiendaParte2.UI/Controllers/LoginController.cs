@@ -141,18 +141,26 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         private async Task EnviarCorreoInicioSesion(string correoElectronico, string nombre)
         {
-            var uri = "https://localhost:7001/api/ServicioDeCorreos/EnviarCorreo";
-            var jsonContent = JsonConvert.SerializeObject(new
-            {
-                destinatario = correoElectronico,
-                asunto = $"Inicio de sesión del usuario {nombre}.",
-                cuerpo = $"Usted inició sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}."
-            });
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            await httpClient.PostAsync(uri, content);
+            // Construir los parámetros de consulta usando QueryHelpers
+            var queryParams = new Dictionary<string, string>
+    {
+        { "asunto", $"Inicio de sesión del usuario {nombre}." },
+        { "cuerpo", $"Usted inició sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}." },
+        { "correoElectronico", correoElectronico }
+    };
+
+            // Construir la cadena de consulta
+            var queryString = QueryHelpers.AddQueryString("", queryParams);
+
+            // URI para llamar al método de enviar correo en la API
+            var uri = $"https://localhost:7001/api/ServicioDeLogin/EnviarCorreo{queryString}";
+
+            // Enviar la solicitud POST a la API
+            var response = await httpClient.PostAsync(uri, null);
+            response.EnsureSuccessStatusCode();
         }
 
-        public async Task LoguearseConGoogle()
+            public async Task LoguearseConGoogle()
         {
             await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, new
                 AuthenticationProperties
