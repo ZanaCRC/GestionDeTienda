@@ -1,0 +1,52 @@
+﻿@model IEnumerable<GestionDeTiendaParte2.Model.Usuario>
+
+@{
+    ViewData["Title"] = "AdministrarUsuarios";
+}
+
+<h1>Administrar Usuarios</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CorreoElectronico)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.Rol)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+          
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CorreoElectronico)
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.Rol)
+            </td>
+           
+            <td>
+                    @Html.ActionLink("DePermisoAUsuario", "DePermisoAUsuario", new { id = item.Id }) |
+               
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

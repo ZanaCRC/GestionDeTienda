@@ -15,5 +15,7 @@ namespace GestionDeTiendaParte2.BL
         public Usuario ObtenerUsuarioPorNombre(string nombre);
         public Usuario GuardarOActualizarUsuarioExterno(string nombre, string correo);
         public bool CambiarClave(string elUsername, string laNuevaClave);
+        public List<Model.Usuario> ObtenerTodosLosUsuarios();
+        public void DePermisos(int id);
     }
 }

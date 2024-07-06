@@ -17,7 +17,26 @@ namespace GestionDeTiendaParte2.BL
         {
             return ElContextoBD.Usuarios.FirstOrDefault(u => u.Nombre == nombre);
         }
-    public Usuario IniciarSesion(string username, string clave)
+
+        public List<Model.Usuario> ObtenerTodosLosUsuarios()
+        {
+            var todosLosUsuarios = ElContextoBD.Usuarios.ToList(); 
+            var usuariosExcepto123 = todosLosUsuarios.Where(u => u.Rol != Model.Rol.Administrador).ToList(); // Filtrar los que no tienen ID 123
+            return usuariosExcepto123;
+        }
+        public void DePermisos(int id)
+        {
+            var usuario = ElContextoBD.Usuarios.Find(id);
+            if (usuario != null)
+            {
+                usuario.Rol = Model.Rol.ConPermiso; 
+                ElContextoBD.Usuarios.Update(usuario);
+                ElContextoBD.SaveChanges();
+            }
+        }
+
+
+        public Usuario IniciarSesion(string username, string clave)
         {
             Usuario? usuario = ElContextoBD.Usuarios.FirstOrDefault(u => u.Nombre == username);
 
