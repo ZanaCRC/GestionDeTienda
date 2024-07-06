@@ -203,7 +203,6 @@ namespace GestionDeTiendaParte2.BL
                                 case MetodoDePago.SinpeMovil:
                                     informacionDeLosCalculos.AcumuladoSinpeMovil += venta.Total;
                                     break;
-                                // Agregar más casos según los métodos de pago que tengas
                                 default:
                                     break;
                             }
