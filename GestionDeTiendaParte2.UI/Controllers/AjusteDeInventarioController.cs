@@ -30,7 +30,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             List<Inventario> lista;
             try
             {
-                var respuesta = await httpClient.GetAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/Lista");
+                var respuesta = await httpClient.GetAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/Liste");
                 string apiResponse = await respuesta.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
 
@@ -46,7 +46,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores
                 return View();
             }
         }
@@ -69,8 +68,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 return View(lista);
             }
             catch (Exception ex)
-            {
-                // Manejo de errores
+            { 
                 return View();
             }
         }
@@ -94,7 +92,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores
                 return View();
             }
         }
@@ -109,7 +106,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     ["idInventario"] = idInventario.ToString()
                 };
 
-                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/InventarioPorId", query);
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaInventarioPorId", query);
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
@@ -120,7 +117,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores
                 return View();
             }
         }
@@ -166,7 +162,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                var response = await httpClient.PostAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/AgregarAjuste", byteContent);
+                var response = await httpClient.PostAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/AgregueAjuste", byteContent);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -183,7 +179,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores
                 return View();
             }
         }
@@ -195,7 +190,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 ["idInventario"] = idInventario.ToString()
             };
 
-            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/InventarioPorId", query);
+            var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/ObtengaInventarioPorId", query);
             var response = await httpClient.GetAsync(uri);
             string apiResponse = await response.Content.ReadAsStringAsync();
             var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);

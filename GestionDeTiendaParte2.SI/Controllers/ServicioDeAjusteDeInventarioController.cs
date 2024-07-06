@@ -16,7 +16,7 @@ namespace GestionDeTiendaParte2.SI.Controllers
             ElAdministradorDeAjustesDeInventario = elAdministrador;
         }
 
-        [HttpGet("Lista")]
+        [HttpGet("Liste")]
         public ActionResult<List<Inventario>> ObtengaLaLista()
         {
             var lista = ElAdministradorDeAjustesDeInventario.ObtengaLaLista();
@@ -37,14 +37,14 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return Ok(lista);
         }
 
-        [HttpGet("InventarioPorId")]
-        public ActionResult<Inventario> ObtenerInventarioPorId(int idInventario)
+        [HttpGet("ObtengaInventarioPorId")]
+        public ActionResult<Inventario> ObtengaInventarioPorId(int idInventario)
         {
             var inventario = ElAdministradorDeAjustesDeInventario.ObtenerInventarioPorId(idInventario);
             return Ok(inventario);
         }
 
-        [HttpPost("AgregarAjuste")]
+        [HttpPost("AgregueAjuste")]
         public ActionResult<bool> AgregueAjuste(ModeloAgregarAjuste nuevoAjuste)
         {
             var resultado = ElAdministradorDeAjustesDeInventario.AgregueAjuste(nuevoAjuste);

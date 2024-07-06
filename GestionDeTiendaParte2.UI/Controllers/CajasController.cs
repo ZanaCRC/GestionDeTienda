@@ -22,7 +22,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             try
             {
-                // Obtén el userID del claim
                 var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
                 if (userIdClaim != null)
                 {
@@ -32,20 +31,18 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
                 using (var httpClient = new HttpClient())
                 {
-                    // Manejar las acciones de abrir o cerrar caja
                     if (accion == "cerrar")
                     {
-                        var cerrarResponse = await httpClient.PostAsync($"https://localhost:7001/api/ServicioDeCajas/CerrarCaja?userID={userID}", null);
+                        var cerrarResponse = await httpClient.PostAsync($"https://localhost:7001/api/ServicioDeCajas/CierreUnaCaja?userID={userID}", null);
                         cerrarResponse.EnsureSuccessStatusCode();
                     }
                     else if (accion == "abrir")
                     {
-                        var abrirResponse = await httpClient.PostAsync($"https://localhost:7001/api/ServicioDeCajas/AbrirCaja?userID={userID}", null);
+                        var abrirResponse = await httpClient.PostAsync($"https://localhost:7001/api/ServicioDeCajas/AbraUnaCaja?userID={userID}", null);
                         abrirResponse.EnsureSuccessStatusCode();
                     }
 
-                    // Obtener la caja activa
-                    var response = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeCajas/CajaActiva?userID={userID}");
+                    var response = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeCajas/LaCajaEstaActiva?userID={userID}");
                     response.EnsureSuccessStatusCode();
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var cajaAbierta = JsonConvert.DeserializeObject<AperturaDeCaja>(apiResponse);
@@ -54,7 +51,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
                     if (cajaAbierta != null)
                     {
-                        // Obtener la información de la caja
                         var informacionCajaResponse = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeCajas/InformacionCaja?idCaja={cajaAbierta.Id}");
                         string informacionApiResponse = await informacionCajaResponse.Content.ReadAsStringAsync();
                         informacionRelacionadaALaCajaPorMostrar = JsonConvert.DeserializeObject<InformacionCaja>(informacionApiResponse);
@@ -62,8 +58,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     }
                     else
                     {
-                        // Registrar una nueva caja si no hay una abierta
-                        string postUrl = $"https://localhost:7001/api/ServicioDeCajas/RegistrarCaja?userID={userID}";
+                        string postUrl = $"https://localhost:7001/api/ServicioDeCajas/RegistreCaja?userID={userID}";
                         var registrarResponse = await httpClient.PostAsync(postUrl, null);
 
                         if (registrarResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -81,7 +76,6 @@ namespace GestionDeTiendaParte2.UI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores
                 return View();
             }
         }

@@ -1,7 +1,6 @@
 ﻿using GestionDeTiendaParte2.Model;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GestionDeTiendaParte2.SI.Controllers
 {
@@ -16,22 +15,22 @@ namespace GestionDeTiendaParte2.SI.Controllers
             this.elAdministradorDeCajas = elAdministradorDeCajas;
         }
 
-        [HttpPost("AbrirCaja")]
-        public IActionResult AbrirCaja(int userID)
+        [HttpPost("AbraUnaCaja")]
+        public IActionResult AbraUnaCaja(int userID)
         {
             elAdministradorDeCajas.AbraUnaCaja(userID);
             return Ok();
         }
 
-        [HttpPost("CerrarCaja")]
-        public IActionResult CerrarCaja(int userID)
+        [HttpPost("CierreUnaCaja")]
+        public IActionResult CierreUnaCaja(int userID)
         {
             elAdministradorDeCajas.CierreUnaCaja(userID);
             return Ok();
         }
 
-        [HttpGet("CajaActiva")]
-        public ActionResult<AperturaDeCaja> CajaActiva(int userID)
+        [HttpGet("LaCajaEstaActiva")]
+        public ActionResult<AperturaDeCaja> LaCajaEstaActiva(int userID)
         {
             var cajaAbierta = elAdministradorDeCajas.BusqueUnaCajaActiva(userID);
             if (cajaAbierta == null)
@@ -52,12 +51,12 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return informacionCaja;
         }
 
-        [HttpPost("RegistrarCaja")]
-        public ActionResult<AperturaDeCaja> RegistrarCaja(int userID)
+        [HttpPost("RegistreUnaCaja")]
+        public ActionResult<AperturaDeCaja> RegistreUnaCaja(int userID)
         {
             elAdministradorDeCajas.RegistreUnaCaja(userID);
             var nuevaCaja = elAdministradorDeCajas.BusqueUnaCajaNueva(1);
-            return Ok(nuevaCaja); // Use Ok to return a 200 status code with the result
+            return Ok(nuevaCaja); 
         }
     }
 }

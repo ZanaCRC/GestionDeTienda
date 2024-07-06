@@ -1,8 +1,6 @@
 ﻿using GestionDeTiendaParte2.Model;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace GestionDeTiendaParte2.SI.Controllers
 {
     [Route("api/[controller]")]
@@ -19,8 +17,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
             elAdministradorDeVentas = administradorDeVentas;
         }
 
-        [HttpGet("ObtenerVentas")]
-        public ActionResult<List<ModeloVenta>> ObtenerVentas(int userID)
+        [HttpGet("ObtengaVentas")]
+        public ActionResult<List<ModeloVenta>> ObtengaVentas(int userID)
         {
             
                 var cajaAbierta = elAdministradorDeCajas.BusqueUnaCajaActiva(userID);
@@ -35,8 +33,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
            
         }
 
-        [HttpGet("ObtenerTodoElInventario")]
-        public ActionResult<List<ModeloInventario>> ObtenerTodoElInventario()
+        [HttpGet("ObtengaTodoElInventario")]
+        public ActionResult<List<ModeloInventario>> ObtengaTodoElInventario()
         {
 
 
@@ -47,8 +45,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
         }
 
 
-        [HttpPost("AgregarProductos")]
-        public IActionResult AgregarProductosALaVenta([FromBody] ModeloAgregarInventarioALaVenta productosSeleccionados)
+        [HttpPost("AgregueProductos")]
+        public IActionResult AgregueProductosALaVenta([FromBody] ModeloAgregarInventarioALaVenta productosSeleccionados)
         {
             foreach (var producto in productosSeleccionados.productosSeleccionados)
             {
@@ -63,8 +61,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
         }
 
 
-        [HttpPost("EliminarProductos/{idVenta}")]
-        public IActionResult EliminarProductosDeVenta(int idVenta, [FromBody] List<int> productosSeleccionados)
+        [HttpPost("ElimineProductos/{idVenta}")]
+        public IActionResult ElimineProductosDeVenta(int idVenta, [FromBody] List<int> productosSeleccionados)
         {
             foreach (var productoId in productosSeleccionados)
             {
@@ -74,15 +72,15 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return Ok();
         }
 
-        [HttpGet("ObtenerListaProductosDeVenta")]
-        public ActionResult<List<ModeloParaMostrarInventarioDeUnaVenta>> ObtenerListaProductosDeVenta(int idVenta)
+        [HttpGet("ObtengaListaProductosDeVenta")]
+        public ActionResult<List<ModeloParaMostrarInventarioDeUnaVenta>> ObtengaListaProductosDeVenta(int idVenta)
         {
             var listaDeProductosDelInventario = elAdministradorDeVentas.ObtenerInventariosPorVenta(idVenta);
             return listaDeProductosDelInventario;
         }
 
-        [HttpPost("Crear")]
-        public IActionResult CrearVenta([FromBody] Model.ModeloCrearVenta nuevaVenta)
+        [HttpPost("Cree")]
+        public IActionResult CreeVenta([FromBody] Model.ModeloCrearVenta nuevaVenta)
         {
             var cajaAbierta = elAdministradorDeCajas.BusqueUnaCajaActiva(nuevaVenta.UserID);
             if (cajaAbierta == null)
@@ -94,8 +92,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return Ok();
         }
 
-        [HttpGet("ObtenerVenta")]
-        public ActionResult<Venta> ObtenerVenta(int idVenta)
+        [HttpGet("ObtengaVenta")]
+        public ActionResult<Venta> ObtengaVenta(int idVenta)
         {
             var venta = elAdministradorDeVentas.BusqueVentasPorId(idVenta);
             if (venta == null)
@@ -106,8 +104,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return venta;
         }
 
-        [HttpPost("AgregarDescuento")]
-        public IActionResult AgregarDescuentoAVenta( [FromBody] ModeloAgregarDescuento ventaModificada)
+        [HttpPost("AgregueDescuento")]
+        public IActionResult AgregueDescuentoAVenta( [FromBody] ModeloAgregarDescuento ventaModificada)
         {
             Venta ventaConDescuento = new Venta();
             ventaConDescuento.PorcentajeDesCuento = ventaModificada.Descuento;
@@ -116,8 +114,8 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return Ok();
         }
 
-        [HttpPost("TerminarVenta")]
-        public IActionResult TerminarVenta(ModeloParaFinalizarVenta ventaParaFinalizar)
+        [HttpPost("TermineVenta")]
+        public IActionResult TermineVenta(ModeloParaFinalizarVenta ventaParaFinalizar)
         {
             Model.Venta ventaAEnviarParaFinalizar = new Model.Venta();
             ventaAEnviarParaFinalizar.MetodoDePago = ventaParaFinalizar.MetodoDePago;
