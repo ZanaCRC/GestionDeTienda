@@ -11,30 +11,30 @@ namespace GestionDeTiendaParte2.BL
 {
     public class AdministradorDeVentas : IAdministradorDeVentas
     {
-        private readonly DA.DBContexto _dbContext;
+        private readonly DA.DBContexto ElContextoBD;
 
         public AdministradorDeVentas(DA.DBContexto dbContext)
         {
-            _dbContext = dbContext;
+            ElContextoBD = dbContext;
         }
 
         public void AgregueUnaNuevaVenta(Model.ModeloCrearVenta nuevaVentaNombre, Model.AperturaDeCaja cajaAbierta)
         {
             try
             {
-                Model.Venta nuevaVenta = new Venta();
-                nuevaVenta.Fecha = DateTime.Now;
-                nuevaVenta.IdAperturaCaja = cajaAbierta.Id;
-                nuevaVenta.Estado = Model.EstadoVenta.Proceso;
-                nuevaVenta.NombreCliente = nuevaVentaNombre.NombreCliente;
+                Model.Venta laNuevaVenta = new Venta();
+                laNuevaVenta.Fecha = DateTime.Now;
+                laNuevaVenta.IdAperturaCaja = cajaAbierta.Id;
+                laNuevaVenta.Estado = Model.EstadoVenta.Proceso;
+                laNuevaVenta.NombreCliente = nuevaVentaNombre.NombreCliente;
 
-                _dbContext.Ventas.Add(nuevaVenta);
-                _dbContext.SaveChanges();
+                ElContextoBD.Ventas.Add(laNuevaVenta);
+                ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al agregar una nueva venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                
+                throw; 
             }
         }
 
@@ -42,21 +42,20 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var ventas = _dbContext.Ventas
+                var lasVentas = ElContextoBD.Ventas
                                       .Where(v => v.IdAperturaCaja == idAperturaCaja)
                                       .ToList();
 
-                foreach (var venta in ventas)
+                foreach (var venta in lasVentas)
                 {
                     ActualiceMontosEnUnaVenta(venta.Id);
                 }
-                List<ModeloVenta> modeloVentas = ConvertirAVentasModelo(ventas);
+                List<ModeloVenta> modeloVentas = ConvertirAVentasModelo(lasVentas);
                 return modeloVentas;
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al buscar ventas por ID de apertura de caja.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 
@@ -64,13 +63,12 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var venta = _dbContext.Ventas.Find(id);
-                return venta;
+                var laVenta = ElContextoBD.Ventas.Find(id);
+                return laVenta;
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al buscar venta por ID.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw;
             }
         }
 
@@ -78,7 +76,7 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var productos = _dbContext.Inventarios
+                var losProductos = ElContextoBD.Inventarios
                                           .Select(p => new Model.Inventario
                                           {
                                               id = p.id,
@@ -88,12 +86,11 @@ namespace GestionDeTiendaParte2.BL
                                              
                                           })
                                           .ToList();
-                return productos;
+                return losProductos;
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al obtener todos los productos del inventario.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 
@@ -102,175 +99,167 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var producto = _dbContext.Inventarios.Find(idProducto);
-                return producto;
+                var elProducto = ElContextoBD.Inventarios.Find(idProducto);
+                return elProducto;
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al buscar producto del inventario por ID.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 
-        public void AgregueVentaDetalle(int idVentaEnCurso, ModeloInventario productoSeleccionado)
+        public void AgregueVentaDetalle(int idVentaEnCurso, ModeloInventario elProductoSeleccionado)
         {
             try
             {
-                Model.Inventario productoDelInventario = BusqueProductoDelInventarioPorId(productoSeleccionado.id);
-                Model.ModeloVentaDetalle modeloVentaDetalle = BusqueVentaDetallePorIdInventarioYVenta(productoDelInventario.id, idVentaEnCurso);
+                Model.Inventario elProductoDelInventario = BusqueProductoDelInventarioPorId(elProductoSeleccionado.id);
+                Model.ModeloVentaDetalle elModeloVentaDetalle = BusqueVentaDetallePorIdInventarioYVenta(elProductoDelInventario.id, idVentaEnCurso);
 
-                if (modeloVentaDetalle == null)
+                if (elModeloVentaDetalle == null)
                 {
-                    if (productoDelInventario.Cantidad >= productoSeleccionado.Cantidad)
+                    if (elProductoDelInventario.Cantidad >= elProductoSeleccionado.Cantidad)
                     {
                         Model.VentaDetalle nuevoVentaDetalle = new Model.VentaDetalle
                         {
                             Id_Venta = idVentaEnCurso,
-                            Cantidad = productoSeleccionado.Cantidad,
-                            Precio = productoDelInventario.Precio,
-                            Monto = productoSeleccionado.Cantidad * productoDelInventario.Precio,
-                            Id_Inventario = productoDelInventario.id
+                            Cantidad = elProductoSeleccionado.Cantidad,
+                            Precio = elProductoDelInventario.Precio,
+                            Monto = elProductoSeleccionado.Cantidad * elProductoDelInventario.Precio,
+                            Id_Inventario = elProductoDelInventario.id
                         };
 
-                        productoDelInventario.Cantidad -= productoSeleccionado.Cantidad;
+                        elProductoDelInventario.Cantidad -= elProductoSeleccionado.Cantidad;
 
-                        _dbContext.Inventarios.Update(productoDelInventario);
-                        _dbContext.VentaDetalles.Add(nuevoVentaDetalle);
+                        ElContextoBD.Inventarios.Update(elProductoDelInventario);
+                        ElContextoBD.VentaDetalles.Add(nuevoVentaDetalle);
                     }
                     else
                     {
-                        // Manejo de caso donde no hay suficiente cantidad en inventario
                         throw new InvalidOperationException("No hay suficiente cantidad en inventario.");
                     }
                 }
                 else
                 {
-                    if (productoDelInventario.Cantidad >= modeloVentaDetalle.Cantidad + productoSeleccionado.Cantidad)
+                    if (elProductoDelInventario.Cantidad >= elModeloVentaDetalle.Cantidad + elProductoSeleccionado.Cantidad)
                     {
-                        modeloVentaDetalle.Cantidad += productoSeleccionado.Cantidad;
-                        modeloVentaDetalle.Monto = modeloVentaDetalle.Cantidad * modeloVentaDetalle.Precio;
+                        elModeloVentaDetalle.Cantidad += elProductoSeleccionado.Cantidad;
+                        elModeloVentaDetalle.Monto = elModeloVentaDetalle.Cantidad * elModeloVentaDetalle.Precio;
 
-                        productoDelInventario.Cantidad -= productoSeleccionado.Cantidad;
+                        elProductoDelInventario.Cantidad -= elProductoSeleccionado.Cantidad;
 
-                        _dbContext.Inventarios.Update(productoDelInventario);
+                        ElContextoBD.Inventarios.Update(elProductoDelInventario);
 
-                        // Verifica si la entidad ya está siendo rastreada
-                        var ventaDetalleExistente = _dbContext.VentaDetalles
+                        var laVentaDetalleExistente = ElContextoBD.VentaDetalles
                             .Local
-                            .FirstOrDefault(vd => vd.Id == modeloVentaDetalle.Id);
+                            .FirstOrDefault(vd => vd.Id == elModeloVentaDetalle.Id);
 
-                        if (ventaDetalleExistente != null)
+                        if (laVentaDetalleExistente != null)
                         {
-                            _dbContext.Entry(ventaDetalleExistente).State = EntityState.Detached;
+                            ElContextoBD.Entry(laVentaDetalleExistente).State = EntityState.Detached;
                         }
 
-                        var ventaDetalle = new VentaDetalle
+                        var laVentaDetalle = new VentaDetalle
                         {
-                            Id = modeloVentaDetalle.Id,
-                            Id_Venta = modeloVentaDetalle.Id_Venta,
-                            Id_Inventario = modeloVentaDetalle.Id_Inventario,
-                            Cantidad = modeloVentaDetalle.Cantidad,
-                            Precio = modeloVentaDetalle.Precio,
-                            Monto = modeloVentaDetalle.Monto,
-                            MontoDescuento = modeloVentaDetalle.MontoDescuento
+                            Id = elModeloVentaDetalle.Id,
+                            Id_Venta = elModeloVentaDetalle.Id_Venta,
+                            Id_Inventario = elModeloVentaDetalle.Id_Inventario,
+                            Cantidad = elModeloVentaDetalle.Cantidad,
+                            Precio = elModeloVentaDetalle.Precio,
+                            Monto = elModeloVentaDetalle.Monto,
+                            MontoDescuento = elModeloVentaDetalle.MontoDescuento
                         };
 
-                        _dbContext.VentaDetalles.Update(ventaDetalle);
+                        ElContextoBD.VentaDetalles.Update(laVentaDetalle);
                     }
                     else
                     {
-                        // Manejo de caso donde no hay suficiente cantidad en inventario
                         throw new InvalidOperationException("No hay suficiente cantidad en inventario.");
                     }
                 }
 
-                _dbContext.SaveChanges();
+                ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al agregar detalle de venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 
 
-        public ModeloVenta ConvertirAVentaModelo(Venta venta)
+        public ModeloVenta ConvertirAVentaModelo(Venta laVenta)
         {
-            var modeloVenta = new ModeloVenta
+            var elModeloVenta = new ModeloVenta
             {
-                Id = venta.Id,
-                Fecha = venta.Fecha,
-                NombreCliente = venta.NombreCliente,
-                Total = venta.Total,
-                Subtotal = venta.Subtotal,
-                PorcentajeDesCuento = venta.PorcentajeDesCuento,
-                MontoDescuento = venta.MontoDescuento,
-                Estado = venta.Estado,
-                IdAperturaCaja = venta.IdAperturaCaja,
-                MetodoDePago = venta.MetodoDePago
+                Id = laVenta.Id,
+                Fecha = laVenta.Fecha,
+                NombreCliente = laVenta.NombreCliente,
+                Total = laVenta.Total,
+                Subtotal = laVenta.Subtotal,
+                PorcentajeDesCuento = laVenta.PorcentajeDesCuento,
+                MontoDescuento = laVenta.MontoDescuento,
+                Estado = laVenta.Estado,
+                IdAperturaCaja = laVenta.IdAperturaCaja,
+                MetodoDePago = laVenta.MetodoDePago
             };
 
-            return modeloVenta;
+            return elModeloVenta;
         }
 
-        public List<ModeloVenta> ConvertirAVentasModelo(List<Venta> ventas)
+        public List<ModeloVenta> ConvertirAVentasModelo(List<Venta> lasVentas)
         {
-            var modelosVentas = new List<ModeloVenta>();
+            var losModelosVentas = new List<ModeloVenta>();
 
-            foreach (var venta in ventas)
+            foreach (var laVenta in lasVentas)
             {
-                var modeloVenta = new ModeloVenta
+                var elModeloVenta = new ModeloVenta
                 {
-                    Id = venta.Id,
-                    Fecha = venta.Fecha,
-                    NombreCliente = venta.NombreCliente,
-                    Total = venta.Total,
-                    Subtotal = venta.Subtotal,
-                    PorcentajeDesCuento = venta.PorcentajeDesCuento,
-                    MontoDescuento = venta.MontoDescuento,
-                    Estado = venta.Estado,
-                    IdAperturaCaja = venta.IdAperturaCaja,
-                    MetodoDePago = venta.MetodoDePago
+                    Id = laVenta.Id,
+                    Fecha = laVenta.Fecha,
+                    NombreCliente = laVenta.NombreCliente,
+                    Total = laVenta.Total,
+                    Subtotal = laVenta.Subtotal,
+                    PorcentajeDesCuento = laVenta.PorcentajeDesCuento,
+                    MontoDescuento = laVenta.MontoDescuento,
+                    Estado = laVenta.Estado,
+                    IdAperturaCaja = laVenta.IdAperturaCaja,
+                    MetodoDePago = laVenta.MetodoDePago
                 };
 
-                modelosVentas.Add(modeloVenta);
+                losModelosVentas.Add(elModeloVenta);
             }
 
-            return modelosVentas;
+            return losModelosVentas;
         }
 
-
-        //ayuda dios
         public Model.ModeloVentaDetalle BusqueVentaDetallePorIdInventarioYVenta(int idInventario, int idVenta)
         {
             try
             {
-                var ventaDetalle = _dbContext.VentaDetalles
+                var laVentaDetalle = ElContextoBD.VentaDetalles
                                            .FirstOrDefault(vd => vd.Id_Inventario == idInventario && vd.Id_Venta == idVenta);
 
-                if (ventaDetalle == null)
+                if (laVentaDetalle == null)
                 {
                     
                     return null; 
                 }
 
-                var modeloVentaDetalle = new ModeloVentaDetalle
+                var elModeloVentaDetalle = new ModeloVentaDetalle
                 {
-                    Id = ventaDetalle.Id,
-                    Id_Venta = ventaDetalle.Id_Venta,
-                    Id_Inventario = ventaDetalle.Id_Inventario,
-                    Cantidad = ventaDetalle.Cantidad,
-                    Precio = ventaDetalle.Precio,
-                    Monto = ventaDetalle.Monto,
-                    MontoDescuento = ventaDetalle.MontoDescuento
+                    Id = laVentaDetalle.Id,
+                    Id_Venta = laVentaDetalle.Id_Venta,
+                    Id_Inventario = laVentaDetalle.Id_Inventario,
+                    Cantidad = laVentaDetalle.Cantidad,
+                    Precio = laVentaDetalle.Precio,
+                    Monto = laVentaDetalle.Monto,
+                    MontoDescuento = laVentaDetalle.MontoDescuento
                 };
 
-                return modeloVentaDetalle;
+                return elModeloVentaDetalle;
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al buscar detalle de venta por ID de inventario y venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw;
             }
         }
 
@@ -279,26 +268,25 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var ventaDetalle = _dbContext.VentaDetalles
+                var laVentaDetalle = ElContextoBD.VentaDetalles
                                       .FirstOrDefault(vd => vd.Id_Venta == idVenta && vd.Id_Inventario == idInventario);
 
-                if (ventaDetalle != null)
+                if (laVentaDetalle != null)
                 {
-                    var inventario = _dbContext.Inventarios.FirstOrDefault(i => i.id == idInventario);
-                    if (inventario != null)
+                    var elInventario = ElContextoBD.Inventarios.FirstOrDefault(i => i.id == idInventario);
+                    if (elInventario != null)
                     {
-                        inventario.Cantidad += ventaDetalle.Cantidad;
-                        _dbContext.Inventarios.Update(inventario);
+                        elInventario.Cantidad += laVentaDetalle.Cantidad;
+                        ElContextoBD.Inventarios.Update(elInventario);
                     }
 
-                    _dbContext.VentaDetalles.Remove(ventaDetalle);
-                    _dbContext.SaveChanges();
+                    ElContextoBD.VentaDetalles.Remove(laVentaDetalle);
+                    ElContextoBD.SaveChanges();
                 }
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al eliminar detalle de venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 
@@ -306,25 +294,24 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                Model.Venta venta = BusqueVentasPorId(idVentaEnCurso);
+                Model.Venta laVenta = BusqueVentasPorId(idVentaEnCurso);
 
-                var ventaDetalles = _dbContext.VentaDetalles
-                                      .Where(vd => vd.Id_Venta == venta.Id)
+                var ventaDetalles = ElContextoBD.VentaDetalles
+                                      .Where(vd => vd.Id_Venta == laVenta.Id)
                                       .ToList();
 
-                double sumaMontos = ventaDetalles.Sum(vd => vd.Monto);
-                double sumaMontosDescuentos = ventaDetalles.Sum(vd => vd.MontoDescuento);
+                double laSumaMontos = ventaDetalles.Sum(vd => vd.Monto);
+                double laSumaMontosDescuentos = ventaDetalles.Sum(vd => vd.MontoDescuento);
 
-                venta.Subtotal = sumaMontos;
-                venta.Total = venta.Subtotal - sumaMontosDescuentos;
+                laVenta.Subtotal = laSumaMontos;
+                laVenta.Total = laVenta.Subtotal - laSumaMontosDescuentos;
 
-                _dbContext.Ventas.Update(venta);
-                _dbContext.SaveChanges();
+                ElContextoBD.Ventas.Update(laVenta);
+                ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al actualizar montos en una venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 
@@ -332,44 +319,43 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var idsInventarios = _dbContext.VentaDetalles
+                var losIdsInventarios = ElContextoBD.VentaDetalles
                                               .Where(vd => vd.Id_Venta == idVenta)
                                               .Select(vd => vd.Id_Inventario)
                                               .ToList();
 
-                var inventarios = _dbContext.Inventarios
-                                        .Where(inv => idsInventarios.Contains(inv.id))
+                var losInventarios = ElContextoBD.Inventarios
+                                        .Where(inv => losIdsInventarios.Contains(inv.id))
                                         .ToList();
 
-                var modelosParaMostrar = new List<ModeloParaMostrarInventarioDeUnaVenta>();
+                var losModelosParaMostrar = new List<ModeloParaMostrarInventarioDeUnaVenta>();
 
-                foreach (var inventario in inventarios)
+                foreach (var elInventario in losInventarios)
                 {
-                    var modeloVentaDetalle = BusqueVentaDetallePorIdInventarioYVenta(inventario.id, idVenta);
+                    var elModeloVentaDetalle = BusqueVentaDetallePorIdInventarioYVenta(elInventario.id, idVenta);
 
-                    if (modeloVentaDetalle != null)
+                    if (elModeloVentaDetalle != null)
                     {
                         var modeloParaMostrar = new ModeloParaMostrarInventarioDeUnaVenta
                         {
-                            id = inventario.id,
-                            Nombre = inventario.Nombre,
-                            Categoria = inventario.Categoria,
-                            Cantidad = modeloVentaDetalle.Cantidad,
-                            Precio = inventario.Precio,
-                            MontoDescuento = modeloVentaDetalle.MontoDescuento,
-                            Monto = modeloVentaDetalle.Monto
+                            id = elInventario.id,
+                            Nombre = elInventario.Nombre,
+                            Categoria = elInventario.Categoria,
+                            Cantidad = elModeloVentaDetalle.Cantidad,
+                            Precio = elInventario.Precio,
+                            MontoDescuento = elModeloVentaDetalle.MontoDescuento,
+                            Monto = elModeloVentaDetalle.Monto
                         };
 
-                        modelosParaMostrar.Add(modeloParaMostrar);
+                        losModelosParaMostrar.Add(modeloParaMostrar);
                     }
                 }
 
-                return modelosParaMostrar;
+                return losModelosParaMostrar;
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al obtener inventarios por venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 
@@ -382,22 +368,21 @@ namespace GestionDeTiendaParte2.BL
                 ventaAModificar.MontoDescuento = (ventaAModificar.PorcentajeDesCuento) / 100 * ventaAModificar.Subtotal;
                 ventaAModificar.Total = ventaAModificar.Subtotal - ventaAModificar.MontoDescuento;
 
-                _dbContext.Ventas.Update(ventaAModificar);
+                ElContextoBD.Ventas.Update(ventaAModificar);
 
                 List<Model.VentaDetalle> listaDeVentaDetalles = ObtenerVentaDetallesPorVenta(id);
 
-                foreach (var detalle in listaDeVentaDetalles)
+                foreach (var elDetalle in listaDeVentaDetalles)
                 {
-                    detalle.MontoDescuento = (ventaAModificar.PorcentajeDesCuento) / 100 * detalle.Monto;
-                    _dbContext.VentaDetalles.Update(detalle);
+                    elDetalle.MontoDescuento = (ventaAModificar.PorcentajeDesCuento) / 100 * elDetalle.Monto;
+                    ElContextoBD.VentaDetalles.Update(elDetalle);
                 }
 
-                _dbContext.SaveChanges();
+                ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al agregar descuento a la venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw;
             }
         }
 
@@ -405,11 +390,11 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var ventaDetalles = _dbContext.VentaDetalles
+                var laVentaDetalles = ElContextoBD.VentaDetalles
                     .Where(vd => vd.Id_Venta == idVenta)
                     .ToList();
 
-                return ventaDetalles;
+                return laVentaDetalles;
             }
             catch (Exception ex)
             {
@@ -426,13 +411,12 @@ namespace GestionDeTiendaParte2.BL
                 ventaAModificar.MetodoDePago = ventaConDescuento.MetodoDePago;
                 ventaAModificar.Estado = Model.EstadoVenta.Terminada;
 
-                _dbContext.Ventas.Update(ventaAModificar);
-                _dbContext.SaveChanges();
+                ElContextoBD.Ventas.Update(ventaAModificar);
+                ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
             {
-                // Log.Error(ex, "Error al terminar la venta.");
-                throw; // Re-lanza la excepción para que sea manejada en un nivel superior si es necesario
+                throw; 
             }
         }
 

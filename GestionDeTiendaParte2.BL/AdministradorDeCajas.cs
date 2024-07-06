@@ -76,7 +76,7 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var nuevaAperturaDeCaja = new AperturaDeCaja
+                var laNuevaAperturaDeCaja = new AperturaDeCaja
                 {
                     UserId = userId,
                     FechaDeInicio = DateTime.Now,
@@ -84,7 +84,7 @@ namespace GestionDeTiendaParte2.BL
                     Observaciones = "Se abrió la caja"
                 };
 
-                ElContextoBD.AperturasDeCaja.Add(nuevaAperturaDeCaja);
+                ElContextoBD.AperturasDeCaja.Add(laNuevaAperturaDeCaja);
                 ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
@@ -98,14 +98,14 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var nuevaAperturaDeCaja = new AperturaDeCaja
+                var laNuevaAperturaDeCaja = new AperturaDeCaja
                 {
                     UserId = userId,
                     Estado = EstadoAperturaCaja.Nueva,
                     Observaciones = "Se registró una nueva caja"
                 };
 
-                ElContextoBD.AperturasDeCaja.Add(nuevaAperturaDeCaja);
+                ElContextoBD.AperturasDeCaja.Add(laNuevaAperturaDeCaja);
                 ElContextoBD.SaveChanges();
             }
             catch (Exception ex)
@@ -118,15 +118,15 @@ namespace GestionDeTiendaParte2.BL
         {
             try
             {
-                var cajaPorCerrar = BusqueUnaCajaActiva(userId);
+                var laCajaPorCerrar = BusqueUnaCajaActiva(userId);
 
-                if (cajaPorCerrar != null)
+                if (laCajaPorCerrar != null)
                 {
-                    cajaPorCerrar.FechaDeCierre = DateTime.Now;
-                    cajaPorCerrar.Estado = EstadoAperturaCaja.Cerrada;
-                    cajaPorCerrar.Observaciones = "Se cerró la caja";
+                    laCajaPorCerrar.FechaDeCierre = DateTime.Now;
+                    laCajaPorCerrar.Estado = EstadoAperturaCaja.Cerrada;
+                    laCajaPorCerrar.Observaciones = "Se cerró la caja";
 
-                    ElContextoBD.AperturasDeCaja.Update(cajaPorCerrar);
+                    ElContextoBD.AperturasDeCaja.Update(laCajaPorCerrar);
                     ElContextoBD.SaveChanges();
                 }
             }
@@ -142,11 +142,11 @@ namespace GestionDeTiendaParte2.BL
             {
                 var informacionDeLosCalculos = new InformacionCaja();
 
-                var ventas = ElContextoBD.Ventas
+                var lasVentas = ElContextoBD.Ventas
                                     .Where(v => v.IdAperturaCaja == idAperturaCaja && v.Estado == EstadoVenta.Terminada)
                                     .ToList();
 
-                foreach (var venta in ventas)
+                foreach (var venta in lasVentas)
                 {
                     switch (venta.MetodoDePago)
                     {
