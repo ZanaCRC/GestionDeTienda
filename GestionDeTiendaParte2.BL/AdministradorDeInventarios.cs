@@ -81,8 +81,8 @@ namespace GestionDeTiendaParte2.BL
 
         public List<Model.Inventario> FiltreLaLista(string nombre)
         {
-            List<Model.Inventario> listaDeLibros = ObtengaLaLista();
-            return listaDeLibros.Where(x => x.Nombre.Contains(nombre)).ToList();
+            List<Model.Inventario> listaDeInventario = ObtengaLaLista();
+            return listaDeInventario.Where(x => x.Nombre.Contains(nombre)).ToList();
         }
 
 
