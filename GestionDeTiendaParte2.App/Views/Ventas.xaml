@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestionDeTiendaParte2.App.ViewModels"
+             x:Class="GestionDeTiendaParte2.App.Views.Ventas"
+             Title="Ventas">
+
+    <ContentPage.BindingContext>
+        <vm:VentasDelDiaViewModel />
+    </ContentPage.BindingContext>
+
+    <StackLayout Padding="20">
+        <Label Text="Información de Caja del Día" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+
+        <Label Text="{Binding InformacionCaja.AcumuladoTarjeta, StringFormat='Tarjeta: {0:C}'}" />
+        <Label Text="{Binding InformacionCaja.AcumuladoEfectivo, StringFormat='Efectivo: {0:C}'}" />
+        <Label Text="{Binding InformacionCaja.AcumuladoSinpeMovil, StringFormat='Sinpe Móvil: {0:C}'}" />
+
+        <Button Text="Recargar" Command="{Binding LoadAperturaDeCajaCommand}" HorizontalOptions="CenterAndExpand" />
+    </StackLayout>
+
+</ContentPage>

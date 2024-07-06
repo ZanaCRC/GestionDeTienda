@@ -11,5 +11,6 @@ namespace GestionDeTiendaParte2.App.Interfaces
     {
         public Task<Usuario> IniciarSesion(string nombre, string clave);
         public Task<List<Model.Inventario>> ObtenerLista();
+        public Task<InformacionCaja> ObtenerInformacionCajasDeHoy();
     }
 }

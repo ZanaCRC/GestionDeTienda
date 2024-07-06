@@ -13,4 +13,10 @@ public partial class Index : ContentPage
         var inventariosPage = new Views.Inventarios();
         await Navigation.PushAsync(inventariosPage);
     }
+
+    public async void OnListarVentasClicked(object sender, EventArgs e)
+    {
+        var ventasPage = new Views.Ventas();
+        await Navigation.PushAsync(ventasPage);
+    }   
 }
