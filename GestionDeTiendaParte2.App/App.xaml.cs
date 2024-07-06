@@ -24,10 +24,11 @@ namespace GestionDeTiendaParte2.App
             services.AddSingleton<IUserService, UserService>();
 
             services.AddTransient<UserViewModel>();
-            
+            services.AddTransient<InventarioViewModel>();
 
             services.AddSingleton<Login>();
-            
+            services.AddSingleton<Views.Index>();
+            services.AddSingleton<Inventarios>();
 
             return services.BuildServiceProvider();
         }

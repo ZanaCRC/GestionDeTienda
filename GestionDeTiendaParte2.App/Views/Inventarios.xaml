@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestionDeTiendaParte2.App.ViewModels"
+             xmlns:model="clr-namespace:GestionDeTiendaParte2.Model;assembly=GestionDeTiendaParte2.Model"
+             xmlns:template="clr-namespace:GestionDeTiendaParte2.App.Views.Templates"
+             x:Class="GestionDeTiendaParte2.App.Views.Inventarios"
+             Title="Inventarios">
+
+    <VerticalStackLayout x:DataType="vm:InventarioViewModel">
+        
+        <Button Text="Listar Inventarios" Command="{Binding LoadInventariosCommand}"/>
+       
+        <CollectionView ItemsSource="{Binding Inventarios}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Inventario">
+                    <template:InventarioTemplate/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

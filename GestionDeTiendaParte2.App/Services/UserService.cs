@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -42,6 +43,22 @@ namespace GestionDeTiendaParte2.App.Services
             {
                 return null;
             }
+        }
+
+        public async Task<List<Model.Inventario>> ObtenerLista()
+        {
+            List<Model.Inventario> lista = new List<Model.Inventario>();
+
+            var uri = "https://apicomercio.azurewebsites.net/api/ServicioDeInventario/ObtenerLista";
+
+            var response = await httpClient.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                lista = JsonConvert.DeserializeObject<List<Model.Inventario>>(apiResponse);
+            }
+
+            return lista;
         }
     }
 }

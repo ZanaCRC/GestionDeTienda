@@ -8,6 +8,7 @@ namespace GestionDeTiendaParte2.App
         {
             Routing.RegisterRoute(nameof(Login), typeof(Login));
             Routing.RegisterRoute(nameof(Views.Index), typeof(Views.Index));
+            Routing.RegisterRoute(nameof(Inventarios), typeof(Inventarios));
             InitializeComponent();
         }
     }

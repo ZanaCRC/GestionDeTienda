@@ -25,7 +25,8 @@
             BackgroundColor="#007ACC"
             TextColor="White"
             CornerRadius="10"
-            HorizontalOptions="FillAndExpand" />
+            HorizontalOptions="FillAndExpand"
+            Clicked="OnListarInventariosClicked"/>
 
         <!-- Botón para ver ingresos -->
         <Button 

@@ -50,7 +50,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android34.0|AnyCPU'">
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
-	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	  <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android34.0|AnyCPU'">
@@ -104,7 +104,13 @@
 	  <MauiXaml Update="Views\Index.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Inventarios.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Login.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Templates\InventarioTemplate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
