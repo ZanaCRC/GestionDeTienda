@@ -20,5 +20,7 @@ namespace GestionDeTiendaParte2.Model
         public int IntentosFallidos { get; set; } // Para contar los intentos de inicio de sesión fallidos
         public bool EstaBloqueado { get; set; } // Para indicar si el usuario está bloqueado
         public DateTime? FechaBloqueo { get; set; }
+
+
     }
 }

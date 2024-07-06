@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using GestionDeTiendaParte2.UI.Models;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
 
 namespace GestionDeTiendaParte2.UI.Controllers
 {
@@ -17,6 +20,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
         private BL.IAdministradorDeUsuarios ElAdministrador;
         private readonly IAdministradorDeCorreos ElMensajero;
         private readonly DA.DBContexto ElContexto;
+        private readonly HttpClient httpClient;
 
         public LoginController(BL.IAdministradorDeUsuarios elAdministrador, BL.IAdministradorDeCorreos elMensajero, DBContexto elcontexto)
         {
@@ -59,66 +63,75 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
 
         [HttpGet]
-        public IActionResult Loguearse()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Loguearse(UI.Models.UsuarioLoginViewModel usuario)
+        public async Task<ActionResult> Loguearse(UsuarioLoginViewModel usuario)
         {
             if (ModelState.IsValid)
             {
-                Usuario elUsuario = ElAdministrador.IniciarSesion(usuario.Nombre, usuario.Clave);
-                if (elUsuario != null && elUsuario.EsExterno == false)
+                // Crear el objeto ModeloUsuario y asignarle los valores del UsuarioLoginViewModel
+                var modeloUsuario = new ModeloUsuario
                 {
-                    // Usuario autenticado correctamente
-                    List<Claim> claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, elUsuario.Nombre),
-                        new Claim(ClaimTypes.Email, elUsuario.CorreoElectronico),
-                        new Claim(ClaimTypes.Role, elUsuario.Rol.ToString()),
-                        new Claim("UserId", elUsuario.Id.ToString())
-
+                    Nombre = usuario.Nombre,
+                    Clave = usuario.Clave,
+                    
                 };
+
+                // Serializar el objeto ModeloUsuario a JSON
+                var uri = "https://localhost:7001/api/ServicioDeUsuarios/IniciarSesion";
+                var jsonContent = JsonConvert.SerializeObject(modeloUsuario);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // Enviar la solicitud POST a la API
+                var response = await httpClient.PostAsync(uri, content);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
+
+                if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno)
+                {
+                    List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, elUsuario.Nombre),
+                new Claim(ClaimTypes.Email, elUsuario.CorreoElectronico),
+                new Claim(ClaimTypes.Role, elUsuario.Rol.ToString()),
+                new Claim("UserId", elUsuario.Id.ToString())
+            };
+
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     AuthenticationProperties prop = new AuthenticationProperties
                     {
                         IsPersistent = true,
-                       // ExpiresUtc = DateTime.UtcNow.AddMinutes(20)
-                       AllowRefresh = true
+                        AllowRefresh = true
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), prop);
 
-                    // Enviar correo de inicio de sesión exitoso
-                    string asunto = $"Inicio de sesión del usuario {elUsuario.Nombre}.";
-                    string cuerpo = $"Usted inicio sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}.";
-                    ElMensajero.SendEmailAsync(elUsuario.CorreoElectronico, asunto, cuerpo);
-
+                    await EnviarCorreoInicioSesion(elUsuario.CorreoElectronico, elUsuario.Nombre);
                     return RedirectToAction("Index", "Home");
                 }
-                if (elUsuario != null && elUsuario.EsExterno )
+                if (elUsuario != null && elUsuario.EsExterno)
                 {
                     ViewData["Error"] = "El usuario ya está logueado con Google o Facebook";
                     return View();
                 }
                 else
                 {
-                    // Verificar si el usuario está bloqueado
-                    Usuario usuarioBloqueado = ElAdministrador.ObtenerUsuarioPorNombre(usuario.Nombre);
-                    if (usuarioBloqueado != null && usuarioBloqueado.EstaBloqueado)
-                    {
-                        // Enviar correo de usuario bloqueado o intento de inicio de sesión mientras está bloqueado
-                        string asunto = usuarioBloqueado.IntentosFallidos >= 3 ? "Usuario Bloqueado." : $"Intento de inicio de sesión del usuario {usuarioBloqueado.Nombre} bloqueado.";
-                        string cuerpo = $"Le informamos que la cuenta del usuario {usuarioBloqueado.Nombre} se encuentra bloqueada por 10 minutos. Por favor ingrese el día {usuarioBloqueado.FechaBloqueo.Value.AddMinutes(10):dd/MM/yyyy} a las {usuarioBloqueado.FechaBloqueo.Value.AddMinutes(10):HH:mm}.";
-                        ElMensajero.SendEmailAsync(usuarioBloqueado.CorreoElectronico, asunto, cuerpo);
-                    }
                     ViewData["Error"] = "Usuario o contraseña incorrectos";
                     return View();
                 }
             }
             return View();
+        }
+
+        private async Task EnviarCorreoInicioSesion(string correoElectronico, string nombre)
+        {
+            var uri = "https://localhost:7001/api/ServicioDeCorreos/EnviarCorreo";
+            var jsonContent = JsonConvert.SerializeObject(new
+            {
+                destinatario = correoElectronico,
+                asunto = $"Inicio de sesión del usuario {nombre}.",
+                cuerpo = $"Usted inició sesión el día {DateTime.Now:dd/MM/yyyy} a las {DateTime.Now:HH:mm}."
+            });
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            await httpClient.PostAsync(uri, content);
         }
 
         public async Task LoguearseConGoogle()
