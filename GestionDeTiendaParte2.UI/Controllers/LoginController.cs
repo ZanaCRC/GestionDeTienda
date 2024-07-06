@@ -76,7 +76,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 };
 
                 // Serializar el objeto ModeloUsuario a JSON
-                var uri = "https://localhost:7001/api/ServicioDeUsuarios/IniciarSesion";
+                var uri = "https://localhost:7001/api/ServicioDeLogin/IniciarSesion";
                 var jsonContent = JsonConvert.SerializeObject(modeloUsuario);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
