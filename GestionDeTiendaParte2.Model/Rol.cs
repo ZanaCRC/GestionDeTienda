@@ -11,7 +11,7 @@ namespace GestionDeTiendaParte2.Model
     {
         Administrador = 123,
         [Description("Usuario Normal")]
-        Normal = 2, 
+        Restringido = 2, 
         ConPermiso = 3
     }
 }

@@ -25,11 +25,10 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             return View();
         }
-       
 
 
-[HttpPost]
-[ValidateAntiForgeryToken]
+
+  
 public async Task<ActionResult> DePermisoAUsuario(int id)
         {
             try

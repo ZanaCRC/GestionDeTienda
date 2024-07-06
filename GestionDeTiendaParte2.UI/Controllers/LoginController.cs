@@ -91,7 +91,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
-
+                if (elUsuario==null) { ViewData["ErrorRestringido"] = "Usuario sin permisos"; return View(); }
                 if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno)
                 {
                     // Crear claims para la autenticación

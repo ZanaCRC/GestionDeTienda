@@ -21,8 +21,8 @@ namespace GestionDeTiendaParte2.BL
         public List<Model.Usuario> ObtenerTodosLosUsuarios()
         {
             var todosLosUsuarios = ElContextoBD.Usuarios.ToList(); 
-            var usuariosExcepto123 = todosLosUsuarios.Where(u => u.Rol != Model.Rol.Administrador).ToList(); // Filtrar los que no tienen ID 123
-            return usuariosExcepto123;
+            var usuariosFiltrados = todosLosUsuarios.Where(u => u.Rol == Model.Rol.Restringido).ToList(); // Filtrar los que no tienen ID 123
+            return usuariosFiltrados;
         }
         public void DePermisos(int id)
         {
@@ -42,7 +42,7 @@ namespace GestionDeTiendaParte2.BL
 
             if (usuario != null)
             {
-                if (usuario.EstaBloqueado && usuario.FechaBloqueo.HasValue && usuario.FechaBloqueo.Value.AddMinutes(10) > DateTime.Now)
+                if (usuario.EstaBloqueado && usuario.FechaBloqueo.HasValue && usuario.FechaBloqueo.Value.AddMinutes(10) > DateTime.Now||usuario.Rol!=Model.Rol.ConPermiso)
                 {
                     // Usuario bloqueado y aún no ha pasado el tiempo de bloqueo
                     return null; // O manejar de otra manera específica
@@ -101,7 +101,7 @@ namespace GestionDeTiendaParte2.BL
                 Nombre = nombre,
                 CorreoElectronico = correoElectronico,
                 Clave = clave,
-                Rol = Model.Rol.Normal,
+                Rol = Model.Rol.Restringido,
                 IntentosFallidos = 0,
                 EstaBloqueado = false,
                 FechaBloqueo = null,
@@ -125,7 +125,7 @@ namespace GestionDeTiendaParte2.BL
                 usuario = new Usuario
                 {
                     Nombre = nombre,
-                    Rol = Rol.Normal,   
+                    Rol = Rol.Restringido,   
                     CorreoElectronico = correo,
                     Clave = "",// Asumiendo que todos los usuarios externos inician con un rol normal
                     IntentosFallidos = 0,
