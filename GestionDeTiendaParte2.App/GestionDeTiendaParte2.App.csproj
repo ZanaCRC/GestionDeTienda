@@ -60,6 +60,12 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 	  <MtouchLink>SdkOnly</MtouchLink>
+	  <MtouchUseLlvm>True</MtouchUseLlvm>
+	  <MtouchFloat32>False</MtouchFloat32>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	  <MtouchFloat32>False</MtouchFloat32>
 	</PropertyGroup>
 
 	<ItemGroup>
