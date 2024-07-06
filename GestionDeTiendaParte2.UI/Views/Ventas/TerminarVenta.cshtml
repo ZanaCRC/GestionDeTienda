@@ -31,6 +31,15 @@
                     <div class="card-body">
                         <h4 class="card-title text-center">Detalles de la Venta</h4>
                         <hr />
+
+                        @* Mostrar mensaje de error si existe *@
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @ViewBag.ErrorMessage
+                            </div>
+                        }
+
                         <form asp-action="TerminarVenta">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">

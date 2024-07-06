@@ -286,7 +286,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         public async Task<ActionResult> TerminarVenta(int idVenta)
         {
-            var query = new Dictionary<string, string>()
+            var query = new Dictionary<string, string>
             {
                 ["idVenta"] = idVenta.ToString()
             };
@@ -307,13 +307,11 @@ namespace GestionDeTiendaParte2.UI.Controllers
         {
             try
             {
-                
                 int idVentaAModificar = (int)TempData["IdDeVentaAModificar"];
-
 
                 var modelo = new ModeloParaFinalizarVenta
                 {
-                    IdVenta = (int)TempData["IdDeVentaAModificar"],
+                    IdVenta = idVentaAModificar,
                     MetodoDePago = ventaModificada.MetodoDePago,
                 };
 
@@ -323,16 +321,22 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var uri = "https://localhost:7001/api/ServicioDeVentas/TermineVenta";
 
                 var response = await httpClient.PostAsync(uri, content);
-                response.EnsureSuccessStatusCode();
+                string apiResponse = await response.Content.ReadAsStringAsync();
 
-
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBag.ErrorMessage = apiResponse;
+                    return View(ventaModificada);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ViewBag.ErrorMessage = $"Se produjo un error al finalizar la venta: {ex.Message}";
+                return View(ventaModificada);
             }
         }
+
     }
 }
