@@ -35,7 +35,7 @@ namespace GestionDeTiendaParte2.SI.Controllers
             return historico;
         }
 
-        [HttpGet("Detalles/{id}")]
+        [HttpGet("Detalles")]
         public ActionResult<Inventario> ObtenerDetalles(int id)
         {
             var inventario = elAdministrador.ObtengaElInventario(id);

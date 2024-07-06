@@ -85,7 +85,13 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
-                if (elUsuario==null) { ViewData["ErrorRestringido"] = "Usuario sin permisos"; return View(); }
+                if (elUsuario == null)
+                {
+                    ViewData["Error"] = "Usuario o contraseña incorrecto"; return View();
+                }
+                else if (elUsuario.Rol == Model.Rol.Restringido) {
+                    ViewData["ErrorRestringido"] = "Usuario sin permisos"; return View(); 
+                }
                 if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno)
                 {
                     List<Claim> claims = new List<Claim>

@@ -1,4 +1,8 @@
 ﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Página Principal";
+    var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,15 +34,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cajas" asp-action="Index">Cajas</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CerrarSesion">Cerrar Sesión</a>
-                        </li>
+                       
+                         
+                        @if (userRole == "Administrador")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AdministrarUsuarios">Administrar Usuarios</a>
+                            </li>
+                            
+                        }
+
+                        
+
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
                                 <p class="nav-link">Hola, @User.Identity.Name</p>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CerrarSesion">Cerrar Sesión</a>
                             </li>
                         </ul>
                     }

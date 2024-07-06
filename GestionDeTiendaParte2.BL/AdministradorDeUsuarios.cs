@@ -42,7 +42,7 @@ namespace GestionDeTiendaParte2.BL
 
             if (usuario != null)
             {
-                if (usuario.EstaBloqueado && usuario.FechaBloqueo.HasValue && usuario.FechaBloqueo.Value.AddMinutes(10) > DateTime.Now||usuario.Rol==Model.Rol.Restringido)
+                if (usuario.EstaBloqueado && usuario.FechaBloqueo.HasValue && usuario.FechaBloqueo.Value.AddMinutes(10) > DateTime.Now)
                 {
                     return null; 
                 }

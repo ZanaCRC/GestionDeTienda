@@ -9,7 +9,7 @@ namespace GestionDeTiendaParte2.Model
 {
     public enum Rol
     {
-        Administrador = 123,
+        Administrador = 1,
         [Description("Usuario Normal")]
         Restringido = 2, 
         ConPermiso = 3

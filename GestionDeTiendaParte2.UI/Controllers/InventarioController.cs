@@ -82,12 +82,26 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            var response = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeInventario/Detalles/{id}");
-            response.EnsureSuccessStatusCode();
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
+            try
+            {
+                var query = new Dictionary<string, string>()
+                {
+                    ["id"] = id.ToString()
+                };
 
-            return View(inventario);
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Detalles", query);
+                var response = await httpClient.GetAsync(uri);
+
+
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
+
+                return View(inventario);
+            }
+            catch (Exception ex)
+            {
+                return View(ex.Message);
+            }
         }
 
         public ActionResult Create()
