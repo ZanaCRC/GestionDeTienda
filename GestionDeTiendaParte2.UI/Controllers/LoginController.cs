@@ -12,6 +12,7 @@ using GestionDeTiendaParte2.UI.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace GestionDeTiendaParte2.UI.Controllers
 {
@@ -27,6 +28,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
             ElAdministrador = elAdministrador;
             ElMensajero = elMensajero;  
             ElContexto = elcontexto;
+            httpClient = new HttpClient();  
         }
 
         [HttpGet]
@@ -60,33 +62,39 @@ namespace GestionDeTiendaParte2.UI.Controllers
             }
             return View(usuario);
         }
-
-
         [HttpGet]
+        public IActionResult Loguearse() {
+
+            return View();
+        }
+
+      
+        [HttpPost]
         public async Task<ActionResult> Loguearse(UsuarioLoginViewModel usuario)
         {
             if (ModelState.IsValid)
             {
-                // Crear el objeto ModeloUsuario y asignarle los valores del UsuarioLoginViewModel
-                var modeloUsuario = new ModeloUsuario
-                {
-                    Nombre = usuario.Nombre,
-                    Clave = usuario.Clave,
-                    
-                };
+                // Construir los parámetros de consulta usando QueryHelpers
+                var queryParams = new Dictionary<string, string>
+        {
+            { "nombre", usuario.Nombre },
+            { "clave", usuario.Clave }
+        };
 
-                // Serializar el objeto ModeloUsuario a JSON
-                var uri = "https://localhost:7001/api/ServicioDeLogin/IniciarSesion";
-                var jsonContent = JsonConvert.SerializeObject(modeloUsuario);
-                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                // Construir la cadena de consulta
+                var queryString = QueryHelpers.AddQueryString("", queryParams);
 
-                // Enviar la solicitud POST a la API
-                var response = await httpClient.PostAsync(uri, content);
+                // URI para llamar al método de inicio de sesión en la API
+                var uri = $"https://localhost:7001/api/ServicioDeLogin/IniciarSesion{queryString}";
+
+                // Enviar la solicitud GET a la API
+                var response = await httpClient.GetAsync(uri);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Usuario elUsuario = JsonConvert.DeserializeObject<Usuario>(apiResponse);
 
                 if (response.IsSuccessStatusCode && elUsuario != null && !elUsuario.EsExterno)
                 {
+                    // Crear claims para la autenticación
                     List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, elUsuario.Nombre),
@@ -95,6 +103,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                 new Claim("UserId", elUsuario.Id.ToString())
             };
 
+                    // Crear identidad de claims
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     AuthenticationProperties prop = new AuthenticationProperties
                     {
@@ -102,24 +111,33 @@ namespace GestionDeTiendaParte2.UI.Controllers
                         AllowRefresh = true
                     };
 
+                    // Autenticar al usuario
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), prop);
 
+                    // Enviar correo de inicio de sesión
                     await EnviarCorreoInicioSesion(elUsuario.CorreoElectronico, elUsuario.Nombre);
+
+                    // Redirigir al usuario a la página de inicio
                     return RedirectToAction("Index", "Home");
                 }
-                if (elUsuario != null && elUsuario.EsExterno)
+                else if (elUsuario != null && elUsuario.EsExterno)
                 {
+                    // Manejar caso de usuario externo (Google o Facebook)
                     ViewData["Error"] = "El usuario ya está logueado con Google o Facebook";
                     return View();
                 }
                 else
                 {
+                    // Manejar caso de credenciales incorrectas
                     ViewData["Error"] = "Usuario o contraseña incorrectos";
                     return View();
                 }
             }
+
+            // Si el modelo no es válido, volver a mostrar la vista de login
             return View();
         }
+
 
         private async Task EnviarCorreoInicioSesion(string correoElectronico, string nombre)
         {

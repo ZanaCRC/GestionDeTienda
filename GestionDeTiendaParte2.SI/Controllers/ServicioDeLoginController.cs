@@ -34,7 +34,7 @@ namespace GestionDeTiendaParte2.SI.Controllers
         }
 
         [HttpGet("IniciarSesion")]
-        public Usuario IniciarSesion(string nombre, string clave)
+        public Model.Usuario IniciarSesion(string nombre, string clave)
         {
             return administradorDeUsuarios.IniciarSesion(nombre, clave);
         }
