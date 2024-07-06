@@ -9,14 +9,49 @@
         <vm:VentasDelDiaViewModel />
     </ContentPage.BindingContext>
 
+    <ContentPage.Resources>
+        <Style x:Key="HeaderLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <Style x:Key="InfoLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#2196F3" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="Margin" Value="0,20,0,0" />
+            <Setter Property="Padding" Value="10" />
+        </Style>
+
+        <Style TargetType="Frame">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="BackgroundColor" Value="LightGray" />
+        </Style>
+    </ContentPage.Resources>
+
     <StackLayout Padding="20">
-        <Label Text="Información de Caja del Día" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+        <Label Text="Información de Caja del Día" Style="{StaticResource HeaderLabelStyle}" />
 
-        <Label Text="{Binding InformacionCaja.AcumuladoTarjeta, StringFormat='Tarjeta: {0:C}'}" />
-        <Label Text="{Binding InformacionCaja.AcumuladoEfectivo, StringFormat='Efectivo: {0:C}'}" />
-        <Label Text="{Binding InformacionCaja.AcumuladoSinpeMovil, StringFormat='Sinpe Móvil: {0:C}'}" />
+        <Frame>
+            <StackLayout>
+                <Label Text="{Binding InformacionCaja.AcumuladoTarjeta, StringFormat='Tarjeta: {0:C}'}" Style="{StaticResource InfoLabelStyle}" />
+                <Label Text="{Binding InformacionCaja.AcumuladoEfectivo, StringFormat='Efectivo: {0:C}'}" Style="{StaticResource InfoLabelStyle}" />
+                <Label Text="{Binding InformacionCaja.AcumuladoSinpeMovil, StringFormat='Sinpe Móvil: {0:C}'}" Style="{StaticResource InfoLabelStyle}" />
+            </StackLayout>
+        </Frame>
 
-        <Button Text="Recargar" Command="{Binding LoadAperturaDeCajaCommand}" HorizontalOptions="CenterAndExpand" />
+        <Button Text="Recargar" Command="{Binding LoadAperturaDeCajaCommand}" Style="{StaticResource PrimaryButtonStyle}" />
     </StackLayout>
 
 </ContentPage>

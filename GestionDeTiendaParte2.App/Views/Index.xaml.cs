@@ -18,5 +18,10 @@ public partial class Index : ContentPage
     {
         var ventasPage = new Views.Ventas();
         await Navigation.PushAsync(ventasPage);
-    }   
+    }
+
+    private void OnCerrarSesionClicked(object sender, EventArgs e)
+    {
+        Navigation.PopToRootAsync();
+    }
 }

@@ -45,7 +45,8 @@
             BackgroundColor="#DC3545"
             TextColor="White"
             CornerRadius="10"
-            HorizontalOptions="FillAndExpand" />
+            HorizontalOptions="FillAndExpand"
+             Clicked="OnCerrarSesionClicked"/>
 
     </VerticalStackLayout>
 </ContentPage>
