@@ -104,7 +104,7 @@ namespace GestionDeTiendaParte2.UI.Controllers
                     {
                         ViewData["Error"] = "Error al iniciar sesion, verifique la informacion ingresada";
                     }
-                    else if (response.IsSuccessStatusCode && !elUsuario.EsExterno)
+                    else if (response.IsSuccessStatusCode && !elUsuario.EsExterno&&elUsuario.Clave!=null)
                     {
                         List<Claim> claims = new List<Claim>
                 {

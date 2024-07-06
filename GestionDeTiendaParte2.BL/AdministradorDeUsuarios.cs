@@ -53,6 +53,7 @@ namespace GestionDeTiendaParte2.BL
                     usuario.EstaBloqueado = false;
                     usuario.FechaBloqueo = null;
                     ElContextoBD.SaveChanges();
+                   
                     return usuario;
                 }
                 else
@@ -65,6 +66,7 @@ namespace GestionDeTiendaParte2.BL
 
                     }
                     ElContextoBD.SaveChanges();
+                    usuario.Clave = null;
                     return usuario; 
                 }
             }
