@@ -65,7 +65,7 @@ namespace GestionDeTiendaParte2.BL
 
                     }
                     ElContextoBD.SaveChanges();
-                    return null; 
+                    return usuario; 
                 }
             }
 
