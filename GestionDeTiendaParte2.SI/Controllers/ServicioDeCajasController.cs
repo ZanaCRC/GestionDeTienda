@@ -58,5 +58,20 @@ namespace GestionDeTiendaParte2.SI.Controllers
             var nuevaCaja = elAdministradorDeCajas.BusqueUnaCajaNueva(1);
             return Ok(nuevaCaja); 
         }
+
+        [HttpGet("InformacionCajasDeHoy")]
+        public IActionResult InformacionCajasDeHoy()
+        {
+            try
+            {
+                var informacionCajas = elAdministradorDeCajas.RealiceLosCalculosDeTodasLasCajasDeHoy();
+                return Ok(informacionCajas);
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores según tus requerimientos
+                return StatusCode(500, $"Error al obtener la información de cajas de hoy: {ex.Message}");
+            }
+        }
     }
 }

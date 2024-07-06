@@ -1,4 +1,5 @@
 ﻿using GestionDeTiendaParte2.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -173,6 +174,50 @@ namespace GestionDeTiendaParte2.BL
                 throw;
             }
         }
+        
+
+            public InformacionCaja RealiceLosCalculosDeTodasLasCajasDeHoy()
+            {
+                try
+                {
+                    var informacionDeLosCalculos = new InformacionCaja();
+                    var fechaDeHoy = DateTime.Today;
+
+                    var aperturasDeCajaHoy = ElContextoBD.AperturasDeCaja
+                        .Include(ac => ac.Ventas)
+                        .Where(ac => ac.FechaDeInicio.Date == fechaDeHoy)
+                        .ToList();
+
+                    foreach (var aperturaCaja in aperturasDeCajaHoy)
+                    {
+                        foreach (var venta in aperturaCaja.Ventas.Where(v => v.Estado == EstadoVenta.Terminada))
+                        {
+                            switch (venta.MetodoDePago)
+                            {
+                                case MetodoDePago.Efectivo:
+                                    informacionDeLosCalculos.AcumuladoEfectivo += venta.Total;
+                                    break;
+                                case MetodoDePago.Tarjeta:
+                                    informacionDeLosCalculos.AcumuladoTarjeta += venta.Total;
+                                    break;
+                                case MetodoDePago.SinpeMovil:
+                                    informacionDeLosCalculos.AcumuladoSinpeMovil += venta.Total;
+                                    break;
+                                // Agregar más casos según los métodos de pago que tengas
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+
+                    return informacionDeLosCalculos;
+                }
+                catch (Exception ex)
+                {
+                    // Manejar excepciones según tus requerimientos
+                    throw new Exception("Error al calcular la información de las cajas de hoy", ex);
+                }
+            }
+        }
     }
 
-}

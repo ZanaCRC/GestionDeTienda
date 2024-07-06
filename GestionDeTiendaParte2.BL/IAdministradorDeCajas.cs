@@ -18,5 +18,6 @@ namespace GestionDeTiendaParte2.BL
         public InformacionCaja RealiceLosCalculosDeLaCaja(int IdAperturaCaja);
         public void RegistreUnaCaja(int UserId);
         public AperturaDeCaja BusqueUnaCajaNueva(int IdUsuario);
+        public InformacionCaja RealiceLosCalculosDeTodasLasCajasDeHoy();
     }
 }
