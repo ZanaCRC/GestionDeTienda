@@ -172,6 +172,13 @@ namespace GestionDeTiendaParte2.BL
                 throw new Exception($"Error al obtener el inventario con ID {Id}.", ex);
             }
         }
+
+        public List<Model.Inventario> FiltreLaLista(string nombre)
+        {
+            List<Model.Inventario> listaDeLibros = ObtengaLaLista();
+            return listaDeLibros.Where(x => x.Nombre.Contains(nombre)).ToList();
+        }
+
     }
 
 }

@@ -15,5 +15,6 @@ namespace GestionDeTiendaParte2.BL
         public bool AgregueAjuste(ModeloAgregarAjuste nuevoAjuste);
         public Inventario ObtenerInventarioPorId(int id);
         public List<ModeloAjusteDeInventario> ConvertirAjustesDeInventario(List<AjusteDeInventario> ajustes);
+        List<Model.Inventario> FiltreLaLista(string nombre);
     }
 }

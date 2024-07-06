@@ -13,7 +13,7 @@
             <p>Tipo de Modificación: @Html.DisplayFor(modelItem => item.ElTipoDeModificacion)</p>
             <p>Fecha y Hora: @Html.DisplayFor(modelItem => item.FechaYHora)</p>
             <p>Nombre de Usuario: @Html.DisplayFor(modelItem => item.NombreUsuario)</p>
-            <a asp-action="Index" class="btn btn-back">Volver</a>
+            <a asp-action="Details" asp-route-id="@item.IdInventario" class="btn btn-back">Volver</a>
         </div>
     }
 </div>

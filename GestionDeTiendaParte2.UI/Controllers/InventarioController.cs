@@ -138,13 +138,26 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            var response = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeInventario/Detalles/{id}");
-            response.EnsureSuccessStatusCode();
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
+            try
+            {
+                var query = new Dictionary<string, string>()
+                {
+                    ["id"] = id.ToString()
+                };
 
-            return View(inventario);
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Detalles", query);
+                var response = await httpClient.GetAsync(uri);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var inventario = JsonConvert.DeserializeObject<Inventario>(apiResponse);
+
+                return View(inventario);
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Inventario inventario)
@@ -153,8 +166,13 @@ namespace GestionDeTiendaParte2.UI.Controllers
             {
                 int idInventario = inventario.id;
 
-                var response = await httpClient.GetAsync($"https://localhost:7001/api/ServicioDeInventario/Detalles/{idInventario}");
-                response.EnsureSuccessStatusCode();
+                var query = new Dictionary<string, string>()
+                {
+                    ["idInventario"] = idInventario.ToString()
+                };
+
+                var uri2 = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Detalles", query);
+                var response = await httpClient.GetAsync(uri2);
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var inventarioBuscado = JsonConvert.DeserializeObject<Inventario>(apiResponse);
 

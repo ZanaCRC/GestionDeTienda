@@ -6,14 +6,12 @@
 
 <h1 style="color: #000; text-align: center; font-family: Georgia, serif; font-size: 30px; font-weight: lighter; margin-bottom: 20px;">Lista de Inventario</h1>
 
-
 <form asp-controller="AjusteDeInventario" asp-action="Index" method="get">
     <p>
         Nombre: <input type="text" name="nombre" />
         <input type="submit" value="Filtrar" class="btn btn-outline-secondary" />
     </p>
 </form>
-
 <div class="card-container">
     @foreach (var item in Model)
     {

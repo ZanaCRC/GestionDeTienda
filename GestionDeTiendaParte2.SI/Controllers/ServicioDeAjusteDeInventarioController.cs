@@ -48,5 +48,11 @@ namespace GestionDeTiendaParte2.SI.Controllers
             var resultado = ElAdministradorDeAjustesDeInventario.AgregueAjuste(nuevoAjuste);
             return Ok(resultado);
         }
+
+        [HttpGet("FiltreLaLista")]
+        public List<Model.Inventario> FiltreLaLista(string nombre)
+        {
+            return ElAdministradorDeAjustesDeInventario.FiltreLaLista(nombre);
+        }
     }
 }

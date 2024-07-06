@@ -28,20 +28,28 @@ namespace GestionDeTiendaParte2.UI.Controllers
         public async Task<ActionResult> Index(string nombre)
         {
             List<Inventario> lista;
+            var httpClient = new HttpClient();
             try
             {
                 var respuesta = await httpClient.GetAsync("https://localhost:7001/api/ServicioDeAjusteDeInventario/Liste");
                 string apiResponse = await respuesta.Content.ReadAsStringAsync();
                 lista = JsonConvert.DeserializeObject<List<Inventario>>(apiResponse);
 
-                if (string.IsNullOrEmpty(nombre))
-                {
+                if (nombre is null)
                     return View(lista);
-                }
                 else
                 {
-                    var filteredList = lista.Where(x => x.Nombre.Contains(nombre)).ToList();
-                    return View(filteredList);
+                    var query = new Dictionary<string, string>()
+                    {
+                        ["nombre"] = nombre.ToString()
+                    };
+
+                    var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeAjusteDeInventario/FiltreLaLista", query);
+                    var response = await httpClient.GetAsync(uri);
+                    string apiResponse2 = await response.Content.ReadAsStringAsync();
+
+                    var listaFiltrada = JsonConvert.DeserializeObject<List<Model.Inventario>>(apiResponse2);
+                    return View(listaFiltrada);
                 }
             }
             catch (Exception ex)
