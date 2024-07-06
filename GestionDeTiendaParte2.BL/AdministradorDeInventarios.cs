@@ -16,20 +16,27 @@ namespace GestionDeTiendaParte2.BL
             ElContextoBD = elContexto;
         }
 
-        public void Agregue(Model.Inventario inventario, string nombreUsuario)
+        public void Agregue(Model.ModeloInventario inventario, string nombreUsuario)
         {
             Model.Historico historico = new Model.Historico();
-            
-
             inventario.Cantidad = 0;
-            ElContextoBD.Inventarios.Add(inventario);
+            Model.Inventario nuevoIventario = new Inventario();
+            nuevoIventario.id = inventario.id;
+
+            nuevoIventario.Nombre = inventario.Nombre;
+            nuevoIventario.Categoria = inventario.Categoria;
+            nuevoIventario.Cantidad = inventario.Cantidad; 
+            nuevoIventario.Precio = inventario.Precio;
+
+
+            ElContextoBD.Inventarios.Add(nuevoIventario);
             ElContextoBD.SaveChanges();
 
             historico.ElNombre = inventario.Nombre;
             historico.FechaYHora = DateTime.Now;
             historico.ElTipoDeModificacion = Model.TipoModificacion.Creacion;
-            historico.IdInventario = inventario.id;
-            historico.NombreUsuario =   nombreUsuario;
+            historico.IdInventario = nuevoIventario.id;
+            historico.NombreUsuario = nombreUsuario;
             historico.ElPrecio = inventario.Precio;
             historico.LaCategoria = inventario.Categoria;
 
@@ -37,7 +44,6 @@ namespace GestionDeTiendaParte2.BL
             ElContextoBD.Historico.Add(historico);
             ElContextoBD.SaveChanges();
             
-
         }
 
         public List<Model.Inventario> ObtengaLaLista()
@@ -80,12 +86,14 @@ namespace GestionDeTiendaParte2.BL
         }
 
 
-        public List<Model.Historico> ObtengaHistorico()
+        public List<Model.Historico> ObtengaHistorico(int id)
         {
+
             try
             {
                 var resultado = from c in ElContextoBD.Historico
-                                select c;
+                                where c.IdInventario == id
+                                select c  ;
                 return resultado.ToList();
             }
             catch (Exception ex)
@@ -134,7 +142,5 @@ namespace GestionDeTiendaParte2.BL
             ElContextoBD.SaveChanges();
 
         }
-
-
     }
 }

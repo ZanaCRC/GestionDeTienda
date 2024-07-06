@@ -29,9 +29,9 @@ namespace GestionDeTiendaParte2.SI.Controllers
         }
 
         [HttpGet("Historico")]
-        public ActionResult<List<Historico>> ObtenerHistorico()
+        public ActionResult<List<Historico>> ObtenerHistorico(int idInventario)
         {
-            var historico = elAdministrador.ObtengaHistorico();
+            var historico = elAdministrador.ObtengaHistorico(idInventario);
             return historico;
         }
 
@@ -47,7 +47,7 @@ namespace GestionDeTiendaParte2.SI.Controllers
         }
 
         [HttpPost("Agregar")]
-        public IActionResult AgregarInventario([FromBody] Inventario inventario, string userName)
+        public IActionResult AgregarInventario([FromBody] ModeloInventario inventario, string userName)
         {
             elAdministrador.Agregue(inventario, userName);
             return Ok();

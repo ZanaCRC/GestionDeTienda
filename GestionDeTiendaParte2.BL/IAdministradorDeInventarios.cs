@@ -9,12 +9,12 @@ namespace GestionDeTiendaParte2.BL
 {
     public interface IAdministradorDeInventarios
     {
-        public void Agregue(Model.Inventario inventario, string nombreUsuario);
+        public void Agregue(Model.ModeloInventario inventario, string nombreUsuario);
         public Model.Inventario ObtengaElInventario(int id);
         public void Edite(Model.ModeloInventario inventario);
         public Model.Inventario ObtenerPorId(int Id);
         public List<Model.Inventario> ObtengaLaLista();
-        public List<Model.Historico> ObtengaHistorico();
+        public List<Model.Historico> ObtengaHistorico(int id);
         public List<Model.Inventario> FiltreLaLista(string nombre);
     }
 }

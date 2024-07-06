@@ -18,7 +18,7 @@ namespace GestionDeTiendaParte2.Model
         public Categoria LaCategoria { get; set; }
         public double ElPrecio { get; set; }
 
-        [ForeignKey("Inventario")]
+        [ForeignKey("Inventario")]  
         public int IdInventario { get; set; }
         public Inventario Inventario { get; set; }
 

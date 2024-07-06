@@ -58,14 +58,26 @@ namespace GestionDeTiendaParte2.UI.Controllers
 
         }
 
-        public async Task<ActionResult> Historico()
+        public async Task<ActionResult> Historico(int idInventario)
         {
-            var response = await httpClient.GetAsync("https://localhost:7001/api/ServicioDeInventario/Historico");
-            response.EnsureSuccessStatusCode();
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            var historico = JsonConvert.DeserializeObject<List<Historico>>(apiResponse);
+            try
+            {
+                var query = new Dictionary<string, string>()
+                {
+                    ["idInventario"] = idInventario.ToString()
+                };
+                var uri = QueryHelpers.AddQueryString("https://localhost:7001/api/ServicioDeInventario/Historico", query);
+                var response = await httpClient.GetAsync(uri);
 
-            return View(historico);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var historico = JsonConvert.DeserializeObject<List<Historico>>(apiResponse);
+
+                return View(historico);
+            }
+            catch (Exception ex)
+            {
+                return View(ex.Message);
+            }
         }
 
         public async Task<ActionResult> Details(int id)

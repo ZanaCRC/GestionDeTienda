@@ -11,6 +11,9 @@
     <div class="alert alert-warning" role="alert">
         No se encontraron ventas registradas.
     </div>
+    <form method="get" action="@Url.Action("Create", "Ventas")">
+        <button type="submit" class="btn btn-add icon-slide-lef"><i class="fas fa-plus"></i> Agregar Venta</button>
+    </form>
 }
 else
 {
